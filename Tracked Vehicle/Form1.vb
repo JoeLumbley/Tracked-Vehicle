@@ -127,7 +127,13 @@ Public Structure ArrowVector
 
         Width = GetWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
 
-        Pen = New Pen(Color.Black, Width) With {.EndCap = Drawing2D.LineCap.ArrowAnchor, .StartCap = Drawing2D.LineCap.Round}
+        'Pen = New Pen() With {.EndCap = Drawing2D.LineCap.ArrowAnchor, .StartCap = Drawing2D.LineCap.Round}
+
+        Pen.Width = Width
+
+        Pen.StartCap = Drawing2D.LineCap.Round
+
+        Pen.EndCap = Drawing2D.LineCap.ArrowAnchor
 
         ' Convert angle from degrees to radians.
         AngleInRadians = AngleInDegrees * (PI / 180)
@@ -199,44 +205,130 @@ End Structure
 
 Public Structure Body
 
+    Public Brush As Brush
+
     Public Center As PointF
 
     Public AngleInDegrees As Single
 
     Public AngleInRadians As Single
 
-    'Private angle As Single
+    Public Width As Integer
+    Public Height As Integer
+    Dim HalfWidth As Integer
+    Dim HalfHeight As Integer
+
+    Dim Points As PointF()
+
+    Dim RotatedPoints
+
+    Public Sub New(brush As Brush,
+                   center As PointF,
+                   width As Integer,
+                   height As Integer,
+                   angleInDegrees As Single)
+
+        Me.Center = center
+
+        Me.Brush = brush
+
+        Me.Width = width
+
+        Me.Height = height
+
+        HalfWidth = width / 2
+
+        HalfHeight = height / 2
 
 
-
-    Public Sub FillRectangle(g As Graphics)
-
-        ' Convert angle from degrees to radians.
-        AngleInRadians = AngleInDegrees * (PI / 180)
-
-
-        Dim width As Integer = 128
-        Dim height As Integer = 64
-        Dim halfWidth As Integer = width / 2
-        Dim halfHeight As Integer = height / 2
-
-        Dim points As PointF() = {
-            New PointF(-halfWidth, -halfHeight),
-            New PointF(halfWidth, -halfHeight),
-            New PointF(halfWidth, halfHeight),
-            New PointF(-halfWidth, halfHeight)
+        Points = {
+            New PointF(-HalfWidth, -HalfHeight),
+            New PointF(HalfWidth, -HalfHeight),
+            New PointF(HalfWidth, HalfHeight),
+            New PointF(-HalfWidth, HalfHeight)
         }
 
-        Dim transformedPoints As PointF() = New PointF(points.Length - 1) {}
+        RotatedPoints = New PointF(Points.Length - 1) {}
+
+
+
+
+
+        If angleInDegrees >= 0 AndAlso angleInDegrees <= 360 Then
+            Me.AngleInDegrees = angleInDegrees
+        Else
+            Me.AngleInDegrees = 0
+        End If
+
+        ' Convert angle from degrees to radians.
+        AngleInRadians = Me.AngleInDegrees * (PI / 180)
+
+
+
+    End Sub
+
+    Private Sub RotatePoints(points As PointF(), center As PointF, angleInRadians As Single)
 
         For i As Integer = 0 To points.Length - 1
-            Dim x As Single = points(i).X * Cos(AngleInRadians) - points(i).Y * Sin(AngleInRadians)
-            Dim y As Single = points(i).X * Sin(AngleInRadians) + points(i).Y * Cos(AngleInRadians)
-            transformedPoints(i) = New PointF(x + Center.X, y + Center.Y)
+
+            Dim x As Single = points(i).X * Cos(angleInRadians) - points(i).Y * Sin(angleInRadians)
+            Dim y As Single = points(i).X * Sin(angleInRadians) + points(i).Y * Cos(angleInRadians)
+
+            RotatedPoints(i) = New PointF(x + center.X, y + center.Y)
+
         Next
 
+    End Sub
+
+
+
+    Public Sub Update()
+
+        AngleInRadians = DegreesToRadians(AngleInDegrees)
+
+        RotatePoints(Points, Center, AngleInRadians)
+
+
+    End Sub
+
+    Public Function DegreesToRadians(AngleInDegrees As Single)
+
+        DegreesToRadians = AngleInDegrees * (PI / 180)
+
+    End Function
+
+
+
+    Public Sub Draw(g As Graphics)
+
+        '' Convert angle from degrees to radians.
+        'AngleInRadians = AngleInDegrees * (PI / 180)
+
+
+        'Dim width As Integer = 128
+        'Dim height As Integer = 64
+        'Dim halfWidth As Integer = width / 2
+        'Dim halfHeight As Integer = height / 2
+
+        'Dim points As PointF() = {
+        '    New PointF(-halfWidth, -halfHeight),
+        '    New PointF(halfWidth, -halfHeight),
+        '    New PointF(halfWidth, halfHeight),
+        '    New PointF(-halfWidth, halfHeight)
+        '}
+
+        'Dim transformedPoints As PointF() = New PointF(points.Length - 1) {}
+
+        'For i As Integer = 0 To Points.Length - 1
+        '    Dim x As Single = Points(i).X * Cos(AngleInRadians) - Points(i).Y * Sin(AngleInRadians)
+        '    Dim y As Single = Points(i).X * Sin(AngleInRadians) + Points(i).Y * Cos(AngleInRadians)
+        '    RotatedPoints(i) = New PointF(x + Center.X, y + Center.Y)
+        'Next
+
         g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-        g.FillPolygon(Brushes.Gray, transformedPoints)
+
+        g.FillPolygon(Brush, RotatedPoints)
+
     End Sub
 
 
@@ -244,12 +336,11 @@ End Structure
 
 Public Class Form1
 
-    Private MyBody As Body
-
-
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), ClientCenter, 0, 60, 80, 10, 20, 0, 100)
+    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 80, 10, 20, 0, 100)
+
+    Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0)
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
@@ -265,13 +356,27 @@ Public Class Form1
     Public Sub New()
         InitializeComponent()
 
-        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
-
-        Me.DoubleBuffered = True
+        InitializeForm()
 
         InitializeTimer()
 
     End Sub
+
+    Private Sub InitializeForm()
+
+        CenterToScreen()
+
+        SetStyle(ControlStyles.UserPaint, True)
+
+        ' Enable double buffering to reduce flickering
+        SetStyle(ControlStyles.OptimizedDoubleBuffer Or ControlStyles.AllPaintingInWmPaint, True)
+
+        Text = "Tracked Vehicle - Code with Joe"
+
+        WindowState = FormWindowState.Maximized
+
+    End Sub
+
 
     Private Sub InitializeTimer()
 
@@ -292,6 +397,8 @@ Public Class Form1
         MyBody.Center = myArrow.Center
 
         MyBody.AngleInDegrees = myArrow.AngleInDegrees
+
+        MyBody.Update()
 
 
         Invalidate()
@@ -366,7 +473,7 @@ Public Class Form1
 
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-        MyBody.FillRectangle(e.Graphics)
+        MyBody.Draw(e.Graphics)
 
 
         myArrow.Draw(e.Graphics)
@@ -428,6 +535,19 @@ Public Class Form1
             DownArrowDown = False
 
         End If
+
+    End Sub
+
+    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+
+        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+
+    End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+        'MyBody.Center = ClientCenter
 
     End Sub
 
