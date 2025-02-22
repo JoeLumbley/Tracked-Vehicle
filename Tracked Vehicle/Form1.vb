@@ -322,7 +322,7 @@ Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 80, 10, 20, 0, 100)
+    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, 100)
 
     Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0)
 
@@ -459,6 +459,8 @@ Public Class Form1
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
+
+        e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
 
         e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
 
