@@ -208,15 +208,35 @@ Public Structure Body
     Dim HalfWidth As Integer
     Dim HalfHeight As Integer
 
-    Dim Points As PointF()
+    Private ReadOnly AlineCenter As StringFormat
 
-    Dim RotatedPoints
+    Private ReadOnly AlineCenterMiddle As StringFormat
+
+
+    'Dim Points As PointF()
+
+    Dim KeyboardHints As PointF()
+
+    Dim RotatedKeyboardHints As PointF()
+
+    Dim Body As PointF()
+
+    Dim RotatedBody As PointF()
+
+    'New Font("Segoe UI", 12)
+
+    Public KeyboardHintsFonts As Font
 
     Public Sub New(brush As Brush,
                    center As PointF,
                    width As Integer,
                    height As Integer,
                    angleInDegrees As Single)
+
+        AlineCenter = New StringFormat With {.Alignment = StringAlignment.Center}
+
+        AlineCenterMiddle = New StringFormat With {.Alignment = StringAlignment.Center,
+                                                   .LineAlignment = StringAlignment.Center}
 
         Me.Center = center
 
@@ -230,14 +250,24 @@ Public Structure Body
 
         HalfHeight = height / 2
 
-        Points = {
+        Body = {
             New PointF(-HalfWidth, -HalfHeight),
             New PointF(HalfWidth, -HalfHeight),
             New PointF(HalfWidth, HalfHeight),
             New PointF(-HalfWidth, HalfHeight)
         }
 
-        RotatedPoints = New PointF(Points.Length - 1) {}
+        RotatedBody = New PointF(Body.Length - 1) {}
+
+        KeyboardHintsFonts = New Font("Segoe UI", 8)
+
+
+        KeyboardHints = {
+            New PointF(HalfWidth - 10, -HalfHeight + 10),
+            New PointF(HalfWidth - 10, HalfHeight - 10)
+        }
+
+        RotatedKeyboardHints = New PointF(KeyboardHints.Length - 1) {}
 
         If angleInDegrees >= 0 AndAlso angleInDegrees <= 360 Then
             Me.AngleInDegrees = angleInDegrees
@@ -250,7 +280,11 @@ Public Structure Body
 
     End Sub
 
-    Private Sub RotatePoints(points As PointF(), center As PointF, angleInRadians As Single)
+    Private Function RotatePoints(points As PointF(), center As PointF, angleInRadians As Single) As PointF()
+
+        Dim RotatedPoints As PointF()
+
+        RotatedPoints = New PointF(points.Length - 1) {}
 
         For i As Integer = 0 To points.Length - 1
 
@@ -261,13 +295,18 @@ Public Structure Body
 
         Next
 
-    End Sub
+        RotatePoints = RotatedPoints
+
+    End Function
 
     Public Sub Update()
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
-        RotatePoints(Points, Center, AngleInRadians)
+        RotatedBody = RotatePoints(Body, Center, AngleInRadians)
+
+        RotatedKeyboardHints = RotatePoints(KeyboardHints, Center, AngleInRadians)
+
 
     End Sub
 
@@ -305,7 +344,11 @@ Public Structure Body
 
         g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-        g.FillPolygon(Brush, RotatedPoints)
+        g?.FillPolygon(Brush, RotatedBody)
+
+        g?.DrawString("A", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
+
+        g?.DrawString("D", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
 
     End Sub
 
@@ -328,6 +371,15 @@ Public Class Form1
     Private UpArrowDown As Boolean
 
     Private DownArrowDown As Boolean
+
+    Private InstructionsFont As New Font("Segoe UI", 12)
+
+    Private InstructionsLocation As New PointF(0, 0)
+
+    Private InstructionsText As New String("Use A or D keys to rotate the vehicle" &
+                                           Environment.NewLine &
+                                           "W for forward and S for reverse.")
+
 
     ' Constructor for the form.
     Public Sub New()
@@ -427,13 +479,13 @@ Public Class Form1
 
         If DownArrowDown Then
 
-            If myArrow.Velocity > myArrow.MinVelocity Then
+            If myArrow.Velocity > -myArrow.MaxVelocity Then
 
-                myArrow.Velocity -= 1
+                myArrow.Velocity += -1
 
             Else
 
-                myArrow.Velocity = myArrow.MinVelocity
+                myArrow.Velocity = -myArrow.MaxVelocity
 
             End If
 
@@ -448,6 +500,8 @@ Public Class Form1
 
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
+        e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+
         MyBody.Draw(e.Graphics)
 
         myArrow.Draw(e.Graphics)
@@ -457,25 +511,25 @@ Public Class Form1
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
 
-        If e.KeyCode = Keys.Right Then
+        If e.KeyCode = Keys.D Then
 
             RightArrowDown = True
 
         End If
 
-        If e.KeyCode = Keys.Left Then
+        If e.KeyCode = Keys.A Then
 
             LeftArrowDown = True
 
         End If
 
-        If e.KeyCode = Keys.Up Then
+        If e.KeyCode = Keys.W Then
 
             UpArrowDown = True
 
         End If
 
-        If e.KeyCode = Keys.Down Then
+        If e.KeyCode = Keys.S Then
 
             DownArrowDown = True
 
@@ -486,25 +540,25 @@ Public Class Form1
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
 
-        If e.KeyCode = Keys.Right Then
+        If e.KeyCode = Keys.D Then
 
             RightArrowDown = False
 
         End If
 
-        If e.KeyCode = Keys.Left Then
+        If e.KeyCode = Keys.A Then
 
             LeftArrowDown = False
 
         End If
 
-        If e.KeyCode = Keys.Up Then
+        If e.KeyCode = Keys.W Then
 
             UpArrowDown = False
 
         End If
 
-        If e.KeyCode = Keys.Down Then
+        If e.KeyCode = Keys.S Then
 
             DownArrowDown = False
 
