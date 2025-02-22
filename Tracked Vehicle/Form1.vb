@@ -1,9 +1,4 @@
-﻿
-
-Imports System.Math
-Imports System.Reflection.Metadata
-
-
+﻿Imports System.Math
 
 Public Structure DeltaTimeStructure
 
@@ -43,9 +38,6 @@ Public Structure DeltaTimeStructure
 
 End Structure
 
-
-
-
 Public Structure ArrowVector
 
     Public Pen As Pen
@@ -77,7 +69,6 @@ Public Structure ArrowVector
     Public AngleInRadians As Single
 
     Public EndPoint As PointF
-
 
     Public Sub New(pen As Pen,
                    center As PointF,
@@ -202,7 +193,6 @@ Public Structure ArrowVector
 
 End Structure
 
-
 Public Structure Body
 
     Public Brush As Brush
@@ -240,7 +230,6 @@ Public Structure Body
 
         HalfHeight = height / 2
 
-
         Points = {
             New PointF(-HalfWidth, -HalfHeight),
             New PointF(HalfWidth, -HalfHeight),
@@ -250,10 +239,6 @@ Public Structure Body
 
         RotatedPoints = New PointF(Points.Length - 1) {}
 
-
-
-
-
         If angleInDegrees >= 0 AndAlso angleInDegrees <= 360 Then
             Me.AngleInDegrees = angleInDegrees
         Else
@@ -262,8 +247,6 @@ Public Structure Body
 
         ' Convert angle from degrees to radians.
         AngleInRadians = Me.AngleInDegrees * (PI / 180)
-
-
 
     End Sub
 
@@ -280,14 +263,11 @@ Public Structure Body
 
     End Sub
 
-
-
     Public Sub Update()
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
         RotatePoints(Points, Center, AngleInRadians)
-
 
     End Sub
 
@@ -296,8 +276,6 @@ Public Structure Body
         DegreesToRadians = AngleInDegrees * (PI / 180)
 
     End Function
-
-
 
     Public Sub Draw(g As Graphics)
 
@@ -330,7 +308,6 @@ Public Structure Body
         g.FillPolygon(Brush, RotatedPoints)
 
     End Sub
-
 
 End Structure
 
@@ -377,7 +354,6 @@ Public Class Form1
 
     End Sub
 
-
     Private Sub InitializeTimer()
 
         Timer1.Interval = 15
@@ -399,7 +375,6 @@ Public Class Form1
         MyBody.AngleInDegrees = myArrow.AngleInDegrees
 
         MyBody.Update()
-
 
         Invalidate()
 
@@ -474,7 +449,6 @@ Public Class Form1
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
         MyBody.Draw(e.Graphics)
-
 
         myArrow.Draw(e.Graphics)
 
