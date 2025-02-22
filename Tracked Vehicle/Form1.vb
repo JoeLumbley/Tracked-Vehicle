@@ -261,7 +261,6 @@ Public Structure Body
 
         KeyboardHintsFonts = New Font("Segoe UI", 8)
 
-
         KeyboardHints = {
             New PointF(HalfWidth - 10, -HalfHeight + 10),
             New PointF(HalfWidth - 10, HalfHeight - 10)
@@ -275,8 +274,29 @@ Public Structure Body
             Me.AngleInDegrees = 0
         End If
 
-        ' Convert angle from degrees to radians.
-        AngleInRadians = Me.AngleInDegrees * (PI / 180)
+        AngleInRadians = DegreesToRadians(angleInDegrees)
+
+    End Sub
+
+    Public Sub Update()
+
+        AngleInRadians = DegreesToRadians(AngleInDegrees)
+
+        RotatedBody = RotatePoints(Body, Center, AngleInRadians)
+
+        RotatedKeyboardHints = RotatePoints(KeyboardHints, Center, AngleInRadians)
+
+    End Sub
+
+    Public Sub Draw(g As Graphics)
+
+        g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+
+        g?.FillPolygon(Brush, RotatedBody)
+
+        g?.DrawString("A", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
+
+        g?.DrawString("D", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
 
     End Sub
 
@@ -299,58 +319,11 @@ Public Structure Body
 
     End Function
 
-    Public Sub Update()
-
-        AngleInRadians = DegreesToRadians(AngleInDegrees)
-
-        RotatedBody = RotatePoints(Body, Center, AngleInRadians)
-
-        RotatedKeyboardHints = RotatePoints(KeyboardHints, Center, AngleInRadians)
-
-
-    End Sub
-
     Public Function DegreesToRadians(AngleInDegrees As Single)
 
         DegreesToRadians = AngleInDegrees * (PI / 180)
 
     End Function
-
-    Public Sub Draw(g As Graphics)
-
-        '' Convert angle from degrees to radians.
-        'AngleInRadians = AngleInDegrees * (PI / 180)
-
-
-        'Dim width As Integer = 128
-        'Dim height As Integer = 64
-        'Dim halfWidth As Integer = width / 2
-        'Dim halfHeight As Integer = height / 2
-
-        'Dim points As PointF() = {
-        '    New PointF(-halfWidth, -halfHeight),
-        '    New PointF(halfWidth, -halfHeight),
-        '    New PointF(halfWidth, halfHeight),
-        '    New PointF(-halfWidth, halfHeight)
-        '}
-
-        'Dim transformedPoints As PointF() = New PointF(points.Length - 1) {}
-
-        'For i As Integer = 0 To Points.Length - 1
-        '    Dim x As Single = Points(i).X * Cos(AngleInRadians) - Points(i).Y * Sin(AngleInRadians)
-        '    Dim y As Single = Points(i).X * Sin(AngleInRadians) + Points(i).Y * Cos(AngleInRadians)
-        '    RotatedPoints(i) = New PointF(x + Center.X, y + Center.Y)
-        'Next
-
-        g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-
-        g?.FillPolygon(Brush, RotatedBody)
-
-        g?.DrawString("A", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
-
-        g?.DrawString("D", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
-
-    End Sub
 
 End Structure
 
