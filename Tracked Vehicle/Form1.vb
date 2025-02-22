@@ -208,12 +208,7 @@ Public Structure Body
     Dim HalfWidth As Integer
     Dim HalfHeight As Integer
 
-    Private ReadOnly AlineCenter As StringFormat
-
     Private ReadOnly AlineCenterMiddle As StringFormat
-
-
-    'Dim Points As PointF()
 
     Dim KeyboardHints As PointF()
 
@@ -223,17 +218,13 @@ Public Structure Body
 
     Dim RotatedBody As PointF()
 
-    'New Font("Segoe UI", 12)
-
-    Public KeyboardHintsFonts As Font
+    Public KeyboardHintsFont As Font
 
     Public Sub New(brush As Brush,
                    center As PointF,
                    width As Integer,
                    height As Integer,
                    angleInDegrees As Single)
-
-        AlineCenter = New StringFormat With {.Alignment = StringAlignment.Center}
 
         AlineCenterMiddle = New StringFormat With {.Alignment = StringAlignment.Center,
                                                    .LineAlignment = StringAlignment.Center}
@@ -259,7 +250,7 @@ Public Structure Body
 
         RotatedBody = New PointF(Body.Length - 1) {}
 
-        KeyboardHintsFonts = New Font("Segoe UI", 8)
+        KeyboardHintsFont = New Font("Segoe UI", 8)
 
         KeyboardHints = {
             New PointF(HalfWidth - 10, -HalfHeight + 10),
@@ -294,9 +285,9 @@ Public Structure Body
 
         g?.FillPolygon(Brush, RotatedBody)
 
-        g?.DrawString("A", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
+        g?.DrawString("A", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
 
-        g?.DrawString("D", KeyboardHintsFonts, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
+        g?.DrawString("D", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
 
     End Sub
 
@@ -337,13 +328,13 @@ Public Class Form1
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
-    Private LeftArrowDown As Boolean
+    Private ADown As Boolean
 
-    Private RightArrowDown As Boolean
+    Private DDown As Boolean
 
-    Private UpArrowDown As Boolean
+    Private WDown As Boolean
 
-    Private DownArrowDown As Boolean
+    Private SDown As Boolean
 
     Private InstructionsFont As New Font("Segoe UI", 12)
 
@@ -408,7 +399,7 @@ Public Class Form1
     Private Sub HandleKeyPresses()
         ' Handle key presses to rotate the turret or fire projectiles.
 
-        If LeftArrowDown Then
+        If ADown Then
 
             If myArrow.AngleInDegrees > 0 Then
 
@@ -422,7 +413,7 @@ Public Class Form1
 
         End If
 
-        If RightArrowDown Then
+        If DDown Then
 
             If myArrow.AngleInDegrees < 360 Then
 
@@ -436,7 +427,7 @@ Public Class Form1
 
         End If
 
-        If UpArrowDown Then
+        If WDown Then
 
             If myArrow.Velocity < myArrow.MaxVelocity Then
 
@@ -450,7 +441,7 @@ Public Class Form1
 
         End If
 
-        If DownArrowDown Then
+        If SDown Then
 
             If myArrow.Velocity > -myArrow.MaxVelocity Then
 
@@ -486,25 +477,25 @@ Public Class Form1
 
         If e.KeyCode = Keys.D Then
 
-            RightArrowDown = True
+            DDown = True
 
         End If
 
         If e.KeyCode = Keys.A Then
 
-            LeftArrowDown = True
+            ADown = True
 
         End If
 
         If e.KeyCode = Keys.W Then
 
-            UpArrowDown = True
+            WDown = True
 
         End If
 
         If e.KeyCode = Keys.S Then
 
-            DownArrowDown = True
+            SDown = True
 
         End If
 
@@ -515,25 +506,25 @@ Public Class Form1
 
         If e.KeyCode = Keys.D Then
 
-            RightArrowDown = False
+            DDown = False
 
         End If
 
         If e.KeyCode = Keys.A Then
 
-            LeftArrowDown = False
+            ADown = False
 
         End If
 
         If e.KeyCode = Keys.W Then
 
-            UpArrowDown = False
+            WDown = False
 
         End If
 
         If e.KeyCode = Keys.S Then
 
-            DownArrowDown = False
+            SDown = False
 
         End If
 
