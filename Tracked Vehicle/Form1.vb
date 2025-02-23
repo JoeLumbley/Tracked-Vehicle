@@ -51,9 +51,6 @@ Public Structure ArrowVector
 
     Public VelocityVector As PointF
 
-
-
-
     Public Acceleration As PointF
 
     Public MinVelocity As Integer
@@ -90,8 +87,6 @@ Public Structure ArrowVector
 
         Me.Acceleration.X = acceleration
         Me.Acceleration.Y = acceleration
-
-
 
         Me.Pen = pen
 
@@ -336,10 +331,6 @@ Public Structure Body
     End Function
 
 End Structure
-
-
-
-
 
 Public Structure AudioPlayer
 
@@ -589,8 +580,6 @@ Public Structure AudioPlayer
 
 End Structure
 
-
-
 Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
@@ -636,7 +625,6 @@ Public Class Form1
         Player.SetVolume("tracknoise", 300)
 
         Player.LoopSound("tracknoise")
-
 
         FilePath = Path.Combine(Application.StartupPath, "ambientnoise.mp3")
 
@@ -685,34 +673,11 @@ Public Class Form1
 
         MyBody.Update()
 
-
-
-
-
         If Not Player.IsPlaying("tracknoise") Then
 
             Player.LoopSound("tracknoise")
 
         End If
-
-        'Sound
-
-        'If Not myArrow.Velocity = 0 Then
-
-        '    If Not Player.IsPlaying("tracknoise") Then
-
-        '        Player.LoopSound("tracknoise")
-
-        '    End If
-
-        'Else
-
-        '    Player.PauseSound("tracknoise")
-
-
-        'End If
-
-
 
         Invalidate()
 
@@ -866,7 +831,6 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
-        'MyBody.Center = ClientCenter
 
     End Sub
 
