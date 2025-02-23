@@ -121,4 +121,13 @@
   <data name="tracknoise" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Sounds\tracknoise.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="tracknoise2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Sounds\tracknoise2.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tracknoise3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Sounds\tracknoise3.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tracknoise4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Sounds\tracknoise4.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

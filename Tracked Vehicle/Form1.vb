@@ -629,7 +629,7 @@ Public Class Form1
 
         Player.SetVolume("tracknoise", 500)
 
-        Player.LoopSound("tracknoise")
+        'Player.LoopSound("tracknoise")
 
 
     End Sub
@@ -852,7 +852,7 @@ Public Class Form1
 
         Dim FilePath As String = Path.Combine(Application.StartupPath, "tracknoise.mp3")
 
-        CreateFileFromResource(FilePath, My.Resources.Resource1.tracknoise)
+        CreateFileFromResource(FilePath, My.Resources.Resource1.tracknoise4)
 
     End Sub
 
