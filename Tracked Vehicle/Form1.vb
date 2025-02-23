@@ -194,13 +194,19 @@ Public Structure ArrowVector
 
     Function GetWidth(velocity As Double, maxVelocity As Double, minWidth As Double, maxWidth As Double) As Double
 
-        ' Normalize the velocity
-        Dim NormalizedVelocity As Double = velocity / maxVelocity
+        If velocity > 0 Then
 
-        ' Interpolate the width
-        Dim Width As Double = minWidth + NormalizedVelocity * (maxWidth - minWidth)
+            ' Normalize the velocity
+            Dim NormalizedVelocity As Double = velocity / maxVelocity
 
-        Return Width
+            ' Interpolate the width
+            Return minWidth + NormalizedVelocity * (maxWidth - minWidth)
+
+        Else
+
+            Return minWidth
+
+        End If
 
     End Function
 
@@ -627,10 +633,18 @@ Public Class Form1
 
         Player.AddSound("tracknoise", FilePath)
 
-        Player.SetVolume("tracknoise", 500)
+        Player.SetVolume("tracknoise", 300)
 
-        'Player.LoopSound("tracknoise")
+        Player.LoopSound("tracknoise")
 
+
+        FilePath = Path.Combine(Application.StartupPath, "ambientnoise.mp3")
+
+        Player.AddSound("ambientnoise", FilePath)
+
+        Player.SetVolume("ambientnoise", 10)
+
+        Player.LoopSound("ambientnoise")
 
     End Sub
 
@@ -672,22 +686,31 @@ Public Class Form1
         MyBody.Update()
 
 
-        'Sound
 
-        If Not myArrow.Velocity = 0 Then
 
-            If Not Player.IsPlaying("tracknoise") Then
 
-                Player.LoopSound("tracknoise")
+        If Not Player.IsPlaying("tracknoise") Then
 
-            End If
-
-        Else
-
-            Player.PauseSound("tracknoise")
-
+            Player.LoopSound("tracknoise")
 
         End If
+
+        'Sound
+
+        'If Not myArrow.Velocity = 0 Then
+
+        '    If Not Player.IsPlaying("tracknoise") Then
+
+        '        Player.LoopSound("tracknoise")
+
+        '    End If
+
+        'Else
+
+        '    Player.PauseSound("tracknoise")
+
+
+        'End If
 
 
 
@@ -847,12 +870,15 @@ Public Class Form1
 
     End Sub
 
-
     Private Sub CreateSoundFiles()
 
         Dim FilePath As String = Path.Combine(Application.StartupPath, "tracknoise.mp3")
 
-        CreateFileFromResource(FilePath, My.Resources.Resource1.tracknoise4)
+        CreateFileFromResource(FilePath, My.Resources.Resource1.tracknoise6)
+
+        FilePath = Path.Combine(Application.StartupPath, "ambientnoise.mp3")
+
+        CreateFileFromResource(FilePath, My.Resources.Resource1.ambientnoise)
 
     End Sub
 
