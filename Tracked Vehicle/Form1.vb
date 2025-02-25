@@ -47,7 +47,6 @@ Public Structure ArrowVector
 
     Public ReversePen As Pen
 
-
     Public Center As PointF
 
     Public Velocity As Double
@@ -64,7 +63,6 @@ Public Structure ArrowVector
 
     Public ReverseLength As Integer
 
-
     Public MinLength As Integer
 
     Public MaxLength As Integer
@@ -72,7 +70,6 @@ Public Structure ArrowVector
     Public Width As Single
 
     Public ReverseWidth As Single
-
 
     Public MinWidth As Integer
 
@@ -85,7 +82,6 @@ Public Structure ArrowVector
     Public EndPoint As PointF
 
     Public ReverseEndPoint As PointF
-
 
     Public Sub New(pen As Pen,
                    center As PointF,
@@ -102,8 +98,7 @@ Public Structure ArrowVector
 
         Me.Pen = pen
 
-        Me.ReversePen = New Pen(Color.White, 5)
-
+        ReversePen = New Pen(Color.White, 5)
 
         Me.Center = center
 
@@ -134,7 +129,6 @@ Public Structure ArrowVector
         Width = GetWidth(Me.Velocity, Me.MaxVelocity, Me.MinWidth, Me.MaxWidth)
 
     End Sub
-
 
     Public Function DegreesToRadians(angleInDegrees As Single)
 
@@ -190,12 +184,6 @@ Public Structure ArrowVector
         ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(ReverseAngleInRadians(AngleInDegrees)),
                              Center.Y + ReverseLength * Math.Sin(ReverseAngleInRadians(AngleInDegrees)))
 
-
-
-        '' Calculate the reverse endpoint by adding π to the angle
-        'ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(AngleInRadians + Math.PI),
-        '                     Center.Y + ReverseLength * Math.Sin(AngleInRadians + Math.PI))
-
         UpdateMovement(deltaTime)
 
     End Sub
@@ -221,15 +209,11 @@ Public Structure ArrowVector
     Public Sub DrawLineFromCenterGivenLenghtAndAngle(g As Graphics)
         ' Draw a line of given length from the given center point at a given angle.
 
-
         ' Draw reverse arrow.
         g.DrawLine(ReversePen, Center, ReverseEndPoint)
 
-
         ' Draw arrow
         g.DrawLine(Pen, Center, EndPoint)
-
-
 
     End Sub
 
@@ -263,13 +247,6 @@ Public Structure ArrowVector
 
     End Function
 
-
-
-
-
-
-
-
     Function GetReverseLength(velocity As Double, maxVelocity As Double, minlength As Double, maxlength As Double) As Double
         ' Reverse the velocity
         Dim ReversedVelocity As Double = -velocity
@@ -298,31 +275,15 @@ Public Structure ArrowVector
         End If
     End Function
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 End Structure
 
 Public Structure Body
-    ' Copy ArrowVector movement
-
 
     Public Brush As Brush
 
     Public Center As PointF
 
     Public Velocity As Double
-
 
     Public VelocityVector As PointF
 
@@ -331,7 +292,6 @@ Public Structure Body
     Public MinVelocity As Integer
 
     Public MaxVelocity As Double
-
 
     Public AngleInDegrees As Single
 
@@ -356,7 +316,6 @@ Public Structure Body
 
     Public Min As PointF ' Minimum corner
     Public Max As PointF ' Maximum corner
-
 
     Public KeyboardHintsFont As Font
 
@@ -400,7 +359,6 @@ Public Structure Body
 
         KeyboardHintsFont = New Font("Segoe UI", 14, FontStyle.Bold)
 
-
         KeyboardHints = {
             New PointF(HalfWidth - 10, -HalfHeight - 20),
             New PointF(HalfWidth - 10, HalfHeight + 20),
@@ -422,7 +380,6 @@ Public Structure Body
         VelocityVector.X = Cos(AngleInRadians) * Me.Velocity
         VelocityVector.Y = Sin(AngleInRadians) * Me.Velocity
 
-
     End Sub
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
@@ -437,13 +394,9 @@ Public Structure Body
         VelocityVector.X = Cos(AngleInRadians) * Velocity
         VelocityVector.Y = Sin(AngleInRadians) * Velocity
 
-
         UpdateMovement(deltaTime)
 
     End Sub
-
-
-
 
     Public Sub Draw(g As Graphics)
 
@@ -452,40 +405,18 @@ Public Structure Body
         g?.FillPolygon(Brush, RotatedBody)
 
         g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(0).X - 17, RotatedKeyboardHints(0).Y - 17, 34, 34)
-
-
         g?.DrawString("A", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(0), AlineCenterMiddle)
 
-
-
         g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(1).X - 17, RotatedKeyboardHints(1).Y - 17, 34, 34)
-
-
         g?.DrawString("D", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(1), AlineCenterMiddle)
 
-
         g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(2).X - 17, RotatedKeyboardHints(2).Y - 17, 34, 34)
-
-
         g?.DrawString("W", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(2), AlineCenterMiddle)
 
-
-
-
         g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
-
-
         g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
 
-
-
     End Sub
-
-
-
-
-
-
 
     Public Sub UpdateMovement(ByVal deltaTime As TimeSpan)
 
@@ -519,12 +450,6 @@ Public Structure Body
 
         End If
 
-
-
-
-
-
-
         ' Check for collision with the top and bottom boundaries
         If Center.Y <= 0 Then
 
@@ -542,51 +467,7 @@ Public Structure Body
 
         End If
 
-
-
-
-        'For i As Integer = 0 To points.Length - 1
-
-        '    ' Check for collision with the left and right boundaries
-        '    If points(i).X <= 0 Then
-
-        '        'points(i).X = 0
-        '        Center.X = 0 + 100
-
-        '        VelocityVector.X = -VelocityVector.X ' Reverse the horizontal velocity
-
-        '    ElseIf points(i).X >= clientWidth Then
-
-        '        'points(i).X = clientWidth
-        '        Center.X = clientWidth
-
-        '        VelocityVector.X = -VelocityVector.X ' Reverse the horizontal velocity
-
-        '    End If
-
-        '    ' Check for collision with the top and bottom boundaries
-        '    If points(i).Y <= 0 Then
-
-        '        'points(i).Y = 0
-        '        Center.X = 0
-
-        '        VelocityVector.Y = -VelocityVector.Y ' Reverse the vertical velocity
-
-        '    ElseIf points(i).Y >= clientHeight Then
-
-        '        'points(i).Y = clientHeight
-        '        Center.X = clientHeight
-
-        '        VelocityVector.Y = -VelocityVector.Y ' Reverse the vertical velocity
-
-        '    End If
-
-        'Next
-
     End Sub
-
-
-
 
     Private Function RotatePoints(points As PointF(), center As PointF, angleInRadians As Single) As PointF()
 
@@ -647,7 +528,6 @@ Public Structure Body
         Next
 
     End Sub
-
 
 End Structure
 
@@ -903,11 +783,9 @@ Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-
     Private MyBody As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 400, 30)
 
     Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, MyBody.MaxVelocity, 30)
-
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
@@ -920,7 +798,6 @@ Public Class Form1
     Private SDown As Boolean
 
     Private EDown As Boolean
-
 
     Private InstructionsFont As New Font("Segoe UI", 12)
 
@@ -956,8 +833,6 @@ Public Class Form1
 
         Player.SetVolume("running", 400)
 
-        'Player.LoopSound("running")
-
     End Sub
 
     Private Sub InitializeForm()
@@ -989,33 +864,17 @@ Public Class Form1
 
         HandleKeyPresses()
 
-
-        'MyBody.Center = myArrow.Center
         myArrow.Center = MyBody.Center
 
-        'MyBody.AngleInDegrees = myArrow.AngleInDegrees
         myArrow.AngleInDegrees = MyBody.AngleInDegrees
 
-
         myArrow.Velocity = MyBody.Velocity
-
-
 
         myArrow.Update(DeltaTime.ElapsedTime)
 
         MyBody.Update(DeltaTime.ElapsedTime)
 
-
-
-        'Wall Bounce
-
-
         MyBody.CheckWallBounce(MyBody.Body, ClientSize.Width, ClientSize.Height)
-
-
-
-
-
 
         If MyBody.Velocity <> 0 Then
 
@@ -1045,133 +904,11 @@ Public Class Form1
 
             End If
 
-
-
         End If
 
         Invalidate()
 
     End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    'Private Sub CheckForWallBounce()
-
-    '    'Did the ball hit the top wall?
-    '    If Ball.Rect.Y < ClientRectangle.Top Then
-    '        'Yes, the ball hit the top wall.
-
-    '        Dim TempV As Single = Ball.Velocity.Y
-
-    '        Ball.Velocity.Y = 0
-
-    '        'Push the ball to the walls top edge.
-    '        Ball.Rect.Y = ClientRectangle.Top + 5
-
-    '        Ball.Position.Y = Ball.Rect.Y
-
-    '        PlayBounceSound()
-
-    '        'Reverse direction on the y-axis
-    '        Ball.Velocity.Y = TempV * -1
-
-    '    End If
-
-    '    'Did the ball hit the bottom wall?
-    '    If Ball.Rect.Y + Ball.Rect.Height > ClientRectangle.Bottom Then
-    '        'Yes, the ball hit the bottom wall.
-
-    '        Dim TempV As Single = Ball.Velocity.Y
-
-    '        Ball.Velocity.Y = 0
-
-    '        'Push the ball to the walls bottom edge.
-    '        Ball.Rect.Y = ClientRectangle.Bottom - Ball.Rect.Height - 5
-
-    '        Ball.Position.Y = Ball.Rect.Y
-
-    '        PlayBounceSound()
-
-    '        'Reverse direction on the y-axis
-    '        Ball.Velocity.Y = TempV * -1
-
-    '    End If
-
-    'End Sub
-
-    'Private Sub CheckForWallBounceXaxis()
-
-    '    'Did the ball hit the left edge of the wall?
-    '    If Ball.Rect.X < ClientRectangle.Left Then
-    '        'Yes, the ball hit the left edge of the wall.
-
-    '        Dim TempV As Single = Ball.Velocity.X
-
-    '        Ball.Velocity.X = 0
-
-    '        'Push the ball to the walls left edge.
-    '        Ball.Rect.X = ClientRectangle.Left + 5
-
-    '        Ball.Position.X = Ball.Rect.X
-
-    '        PlayBounceSound()
-
-    '        'Reverse direction on the y-axis
-    '        Ball.Velocity.X = TempV * -1
-
-    '    End If
-
-    '    'Did the ball hit the bottom wall?
-    '    If Ball.Rect.X + Ball.Rect.Width > ClientRectangle.Right Then
-    '        'Yes, the ball hit the bottom wall.
-
-    '        Dim TempV As Single = Ball.Velocity.X
-
-    '        Ball.Velocity.X = 0
-
-    '        'Push the ball to the walls right edge.
-    '        Ball.Rect.X = ClientRectangle.Right - Ball.Rect.Height - 5
-
-    '        Ball.Position.X = Ball.Rect.X
-
-    '        PlayBounceSound()
-
-    '        'Reverse direction on the y-axis
-    '        Ball.Velocity.X = TempV * -1
-
-    '    End If
-
-    'End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     Private Sub HandleKeyPresses()
         ' Handle key presses to rotate the turret or fire projectiles.
@@ -1240,8 +977,6 @@ Public Class Form1
 
         End If
 
-
-
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
@@ -1294,7 +1029,6 @@ Public Class Form1
 
         End If
 
-
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
@@ -1329,7 +1063,6 @@ Public Class Form1
             EDown = False
 
         End If
-
 
     End Sub
 
@@ -1374,7 +1107,6 @@ Public Class Form1
         End Try
 
     End Sub
-
 
     Private Sub Decelerate()
 
@@ -1451,6 +1183,5 @@ Public Class Form1
         End If
 
     End Sub
-
 
 End Class
