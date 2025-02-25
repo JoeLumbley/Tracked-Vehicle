@@ -942,21 +942,21 @@ Public Class Form1
 
         CreateSoundFiles()
 
-        Dim FilePath As String = Path.Combine(Application.StartupPath, "tracknoise.mp3")
+        Dim FilePath As String = Path.Combine(Application.StartupPath, "idle.mp3")
 
-        Player.AddSound("tracknoise", FilePath)
+        Player.AddSound("idle", FilePath)
 
-        Player.SetVolume("tracknoise", 300)
+        Player.SetVolume("idle", 300)
 
-        Player.LoopSound("tracknoise")
+        Player.LoopSound("idle")
 
-        FilePath = Path.Combine(Application.StartupPath, "ambientnoise.mp3")
+        FilePath = Path.Combine(Application.StartupPath, "running.mp3")
 
-        Player.AddSound("ambientnoise", FilePath)
+        Player.AddSound("running", FilePath)
 
-        Player.SetVolume("ambientnoise", 10)
+        Player.SetVolume("running", 400)
 
-        Player.LoopSound("ambientnoise")
+        'Player.LoopSound("running")
 
     End Sub
 
@@ -1016,9 +1016,36 @@ Public Class Form1
 
 
 
-        If Not Player.IsPlaying("tracknoise") Then
 
-            Player.LoopSound("tracknoise")
+        If MyBody.Velocity <> 0 Then
+
+            If Not Player.IsPlaying("running") Then
+
+                Player.LoopSound("running")
+
+            End If
+
+            If Player.IsPlaying("idle") Then
+
+                Player.PauseSound("idle")
+
+            End If
+
+        Else
+
+            If Not Player.IsPlaying("idle") Then
+
+                Player.LoopSound("idle")
+
+            End If
+
+            If Player.IsPlaying("running") Then
+
+                Player.PauseSound("running")
+
+            End If
+
+
 
         End If
 
@@ -1320,13 +1347,13 @@ Public Class Form1
 
     Private Sub CreateSoundFiles()
 
-        Dim FilePath As String = Path.Combine(Application.StartupPath, "tracknoise.mp3")
+        Dim FilePath As String = Path.Combine(Application.StartupPath, "idle.mp3")
 
-        CreateFileFromResource(FilePath, My.Resources.Resource1.tracknoise6)
+        CreateFileFromResource(FilePath, My.Resources.Resource1.idle)
 
-        FilePath = Path.Combine(Application.StartupPath, "ambientnoise.mp3")
+        FilePath = Path.Combine(Application.StartupPath, "running.mp3")
 
-        CreateFileFromResource(FilePath, My.Resources.Resource1.ambientnoise)
+        CreateFileFromResource(FilePath, My.Resources.Resource1.running)
 
     End Sub
 
