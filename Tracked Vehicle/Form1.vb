@@ -919,6 +919,9 @@ Public Class Form1
 
     Private SDown As Boolean
 
+    Private EDown As Boolean
+
+
     Private InstructionsFont As New Font("Segoe UI", 12)
 
     Private InstructionsLocation As New PointF(0, 0)
@@ -1186,8 +1189,6 @@ Public Class Form1
 
             End If
 
-
-
         ElseIf SDown Then
 
             If MyBody.Velocity > -MyBody.MaxVelocity Then
@@ -1205,6 +1206,14 @@ Public Class Form1
             Decelerate()
 
         End If
+
+        If EDown Then
+
+            EmergencyStop()
+
+        End If
+
+
 
     End Sub
 
@@ -1252,6 +1261,13 @@ Public Class Form1
 
         End If
 
+        If e.KeyCode = Keys.E Then
+
+            EDown = True
+
+        End If
+
+
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
@@ -1280,6 +1296,13 @@ Public Class Form1
             SDown = False
 
         End If
+
+        If e.KeyCode = Keys.E Then
+
+            EDown = False
+
+        End If
+
 
     End Sub
 
@@ -1363,5 +1386,44 @@ Public Class Form1
         End If
 
     End Sub
+
+    Private Sub EmergencyStop()
+
+        If MyBody.Velocity < 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+
+            If newVelocity > 0 Then
+
+                MyBody.Velocity = 0
+
+            Else
+
+                MyBody.Velocity = newVelocity
+
+            End If
+
+        End If
+
+        If MyBody.Velocity > 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+
+            If newVelocity < 0 Then
+
+                MyBody.Velocity = 0
+
+            Else
+
+                MyBody.Velocity = newVelocity
+
+            End If
+
+        End If
+
+    End Sub
+
 
 End Class
