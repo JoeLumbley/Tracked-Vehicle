@@ -208,10 +208,24 @@ Public Structure ArrowVector
 End Structure
 
 Public Structure Body
+    ' Copy ArrowVector movement
+
 
     Public Brush As Brush
 
     Public Center As PointF
+
+    Public Velocity As Double
+
+
+    Public VelocityVector As PointF
+
+    Public Acceleration As PointF
+
+    Public MinVelocity As Integer
+
+    Public MaxVelocity As Double
+
 
     Public AngleInDegrees As Single
 
@@ -232,16 +246,30 @@ Public Structure Body
 
     Dim RotatedBody As PointF()
 
+    Public HitBox As Rectangle
+
+    Public Min As PointF ' Minimum corner
+    Public Max As PointF ' Maximum corner
+
+
     Public KeyboardHintsFont As Font
 
     Public Sub New(brush As Brush,
                    center As PointF,
                    width As Integer,
                    height As Integer,
-                   angleInDegrees As Single)
+                   angleInDegrees As Single, velocity As Double,
+                   maxVelocity As Double, acceleration As Double)
 
         AlineCenterMiddle = New StringFormat With {.Alignment = StringAlignment.Center,
                                                    .LineAlignment = StringAlignment.Center}
+
+        Me.Velocity = velocity
+
+        Me.MaxVelocity = maxVelocity
+
+        Me.Acceleration.X = acceleration
+        Me.Acceleration.Y = acceleration
 
         Me.Center = center
 
@@ -281,9 +309,14 @@ Public Structure Body
 
         AngleInRadians = DegreesToRadians(angleInDegrees)
 
+        ' Set velocity based on angle
+        VelocityVector.X = Cos(AngleInRadians) * Me.Velocity
+        VelocityVector.Y = Sin(AngleInRadians) * Me.Velocity
+
+
     End Sub
 
-    Public Sub Update()
+    Public Sub Update(ByVal deltaTime As TimeSpan)
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
@@ -291,7 +324,17 @@ Public Structure Body
 
         RotatedKeyboardHints = RotatePoints(KeyboardHints, Center, AngleInRadians)
 
+        ' Set velocity based on angle
+        VelocityVector.X = Cos(AngleInRadians) * Velocity
+        VelocityVector.Y = Sin(AngleInRadians) * Velocity
+
+
+        UpdateMovement(deltaTime)
+
     End Sub
+
+
+
 
     Public Sub Draw(g As Graphics)
 
@@ -304,6 +347,113 @@ Public Structure Body
         g?.DrawString("D", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
 
     End Sub
+
+
+
+
+
+
+
+    Public Sub UpdateMovement(ByVal deltaTime As TimeSpan)
+
+        'Move horizontally.
+        Center.X += CSng(VelocityVector.X * deltaTime.TotalSeconds) 'Δs = V * Δt
+        'Displacement = Velocity x Delta Time
+
+        'Move verticaly.
+        Center.Y += CSng(VelocityVector.Y * deltaTime.TotalSeconds) 'Δs = V * Δt
+        'Displacement = Velocity x Delta Time
+
+    End Sub
+
+    Public Sub CheckWallBounce(points As PointF(), clientWidth As Integer, clientHeight As Integer)
+        ' Function to check for wall bounce and adjust position and velocity of the body.
+
+        ' Check for collision with the left and right boundaries.
+        If Center.X <= 0 Then
+
+            Center.X = 0
+
+            ' Reverse velocity for bounce back.
+            Velocity = -Velocity
+
+        ElseIf Center.X >= clientWidth Then
+
+            Center.X = clientWidth
+
+            ' Reverse velocity for bounce back.
+            Velocity = -Velocity
+
+        End If
+
+
+
+
+
+
+
+        ' Check for collision with the top and bottom boundaries
+        If Center.Y <= 0 Then
+
+            Center.Y = 0
+
+            ' Reverse velocity for bounce back.
+            Velocity = -Velocity
+
+        ElseIf Center.Y >= clientHeight Then
+
+            Center.Y = clientHeight
+
+            ' Reverse velocity for bounce back.
+            Velocity = -Velocity
+
+        End If
+
+
+
+
+        'For i As Integer = 0 To points.Length - 1
+
+        '    ' Check for collision with the left and right boundaries
+        '    If points(i).X <= 0 Then
+
+        '        'points(i).X = 0
+        '        Center.X = 0 + 100
+
+        '        VelocityVector.X = -VelocityVector.X ' Reverse the horizontal velocity
+
+        '    ElseIf points(i).X >= clientWidth Then
+
+        '        'points(i).X = clientWidth
+        '        Center.X = clientWidth
+
+        '        VelocityVector.X = -VelocityVector.X ' Reverse the horizontal velocity
+
+        '    End If
+
+        '    ' Check for collision with the top and bottom boundaries
+        '    If points(i).Y <= 0 Then
+
+        '        'points(i).Y = 0
+        '        Center.X = 0
+
+        '        VelocityVector.Y = -VelocityVector.Y ' Reverse the vertical velocity
+
+        '    ElseIf points(i).Y >= clientHeight Then
+
+        '        'points(i).Y = clientHeight
+        '        Center.X = clientHeight
+
+        '        VelocityVector.Y = -VelocityVector.Y ' Reverse the vertical velocity
+
+        '    End If
+
+        'Next
+
+    End Sub
+
+
+
 
     Private Function RotatePoints(points As PointF(), center As PointF, angleInRadians As Single) As PointF()
 
@@ -320,7 +470,7 @@ Public Structure Body
 
         Next
 
-        RotatePoints = RotatedPoints
+        Return RotatedPoints
 
     End Function
 
@@ -329,6 +479,42 @@ Public Structure Body
         DegreesToRadians = AngleInDegrees * (PI / 180)
 
     End Function
+
+    ' Method to check if a point is inside the AABB
+    Public Function Contains(point As PointF) As Boolean
+        Return point.X >= Min.X AndAlso point.X <= Max.X AndAlso
+               point.Y >= Min.Y AndAlso point.Y <= Max.Y
+    End Function
+
+    Public Function Intersects(rectangle As Rectangle) As Boolean
+        ' Function to check if the rectangle intersects with the points
+
+        ' Get the minimum and maximum points of the body
+        GetMinMax(Body)
+
+        ' Return if there is an intersection
+        Return Min.X <= rectangle.Right AndAlso Max.X >= rectangle.Left AndAlso
+           Min.Y <= rectangle.Bottom AndAlso Max.Y >= rectangle.Top
+
+    End Function
+
+    ' Subroutine to get the minimum and maximum points
+    Private Sub GetMinMax(points As PointF())
+
+        ' Initialize Min and Max to the first point
+        Min = points(0)
+        Max = points(0)
+
+        ' Iterate through the points to find the min and max
+        For Each point As PointF In points
+            If point.X < Min.X Then Min.X = point.X
+            If point.Y < Min.Y Then Min.Y = point.Y
+            If point.X > Max.X Then Max.X = point.X
+            If point.Y > Max.Y Then Max.Y = point.Y
+        Next
+
+    End Sub
+
 
 End Structure
 
@@ -586,7 +772,7 @@ Public Class Form1
 
     Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, 100, 30)
 
-    Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0)
+    Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0, 0, 400, 30)
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
@@ -665,13 +851,32 @@ Public Class Form1
 
         HandleKeyPresses()
 
+
+        'MyBody.Center = myArrow.Center
+        myArrow.Center = MyBody.Center
+
+        'MyBody.AngleInDegrees = myArrow.AngleInDegrees
+        myArrow.AngleInDegrees = MyBody.AngleInDegrees
+
+
+        myArrow.Velocity = MyBody.Velocity
+
+
+
         myArrow.Update(DeltaTime.ElapsedTime)
 
-        MyBody.Center = myArrow.Center
+        MyBody.Update(DeltaTime.ElapsedTime)
 
-        MyBody.AngleInDegrees = myArrow.AngleInDegrees
 
-        MyBody.Update()
+
+        'Wall Bounce
+
+
+        MyBody.CheckWallBounce(MyBody.Body, ClientSize.Width, ClientSize.Height)
+
+
+
+
 
         If Not Player.IsPlaying("tracknoise") Then
 
@@ -683,18 +888,138 @@ Public Class Form1
 
     End Sub
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    'Private Sub CheckForWallBounce()
+
+    '    'Did the ball hit the top wall?
+    '    If Ball.Rect.Y < ClientRectangle.Top Then
+    '        'Yes, the ball hit the top wall.
+
+    '        Dim TempV As Single = Ball.Velocity.Y
+
+    '        Ball.Velocity.Y = 0
+
+    '        'Push the ball to the walls top edge.
+    '        Ball.Rect.Y = ClientRectangle.Top + 5
+
+    '        Ball.Position.Y = Ball.Rect.Y
+
+    '        PlayBounceSound()
+
+    '        'Reverse direction on the y-axis
+    '        Ball.Velocity.Y = TempV * -1
+
+    '    End If
+
+    '    'Did the ball hit the bottom wall?
+    '    If Ball.Rect.Y + Ball.Rect.Height > ClientRectangle.Bottom Then
+    '        'Yes, the ball hit the bottom wall.
+
+    '        Dim TempV As Single = Ball.Velocity.Y
+
+    '        Ball.Velocity.Y = 0
+
+    '        'Push the ball to the walls bottom edge.
+    '        Ball.Rect.Y = ClientRectangle.Bottom - Ball.Rect.Height - 5
+
+    '        Ball.Position.Y = Ball.Rect.Y
+
+    '        PlayBounceSound()
+
+    '        'Reverse direction on the y-axis
+    '        Ball.Velocity.Y = TempV * -1
+
+    '    End If
+
+    'End Sub
+
+    'Private Sub CheckForWallBounceXaxis()
+
+    '    'Did the ball hit the left edge of the wall?
+    '    If Ball.Rect.X < ClientRectangle.Left Then
+    '        'Yes, the ball hit the left edge of the wall.
+
+    '        Dim TempV As Single = Ball.Velocity.X
+
+    '        Ball.Velocity.X = 0
+
+    '        'Push the ball to the walls left edge.
+    '        Ball.Rect.X = ClientRectangle.Left + 5
+
+    '        Ball.Position.X = Ball.Rect.X
+
+    '        PlayBounceSound()
+
+    '        'Reverse direction on the y-axis
+    '        Ball.Velocity.X = TempV * -1
+
+    '    End If
+
+    '    'Did the ball hit the bottom wall?
+    '    If Ball.Rect.X + Ball.Rect.Width > ClientRectangle.Right Then
+    '        'Yes, the ball hit the bottom wall.
+
+    '        Dim TempV As Single = Ball.Velocity.X
+
+    '        Ball.Velocity.X = 0
+
+    '        'Push the ball to the walls right edge.
+    '        Ball.Rect.X = ClientRectangle.Right - Ball.Rect.Height - 5
+
+    '        Ball.Position.X = Ball.Rect.X
+
+    '        PlayBounceSound()
+
+    '        'Reverse direction on the y-axis
+    '        Ball.Velocity.X = TempV * -1
+
+    '    End If
+
+    'End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     Private Sub HandleKeyPresses()
         ' Handle key presses to rotate the turret or fire projectiles.
 
         If ADown Then
 
-            If myArrow.AngleInDegrees > 0 Then
+            If MyBody.AngleInDegrees > 0 Then
 
-                myArrow.AngleInDegrees -= 1 ' Rotate counterclockwise
+                MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
 
             Else
 
-                myArrow.AngleInDegrees = 360
+                MyBody.AngleInDegrees = 360
 
             End If
 
@@ -702,13 +1027,13 @@ Public Class Form1
 
         If DDown Then
 
-            If myArrow.AngleInDegrees < 360 Then
+            If MyBody.AngleInDegrees < 360 Then
 
-                myArrow.AngleInDegrees += 1 ' Rotate clockwise
+                MyBody.AngleInDegrees += 1 ' Rotate clockwise
 
             Else
 
-                myArrow.AngleInDegrees = 0
+                MyBody.AngleInDegrees = 0
 
             End If
 
@@ -716,13 +1041,13 @@ Public Class Form1
 
         If WDown Then
 
-            If myArrow.Velocity < myArrow.MaxVelocity Then
+            If MyBody.Velocity < MyBody.MaxVelocity Then
 
-                myArrow.Velocity += 1
+                MyBody.Velocity += 1
 
             Else
 
-                myArrow.Velocity = myArrow.MaxVelocity
+                MyBody.Velocity = MyBody.MaxVelocity
 
             End If
 
@@ -730,17 +1055,18 @@ Public Class Form1
 
         ElseIf SDown Then
 
-            If myArrow.Velocity > -myArrow.MaxVelocity Then
+            If MyBody.Velocity > -MyBody.MaxVelocity Then
 
-                myArrow.Velocity += -1
+                MyBody.Velocity += -1
 
             Else
 
-                myArrow.Velocity = -myArrow.MaxVelocity
+                MyBody.Velocity = -MyBody.MaxVelocity
 
             End If
 
         Else
+
             Decelerate()
 
         End If
@@ -867,35 +1193,35 @@ Public Class Form1
 
     Private Sub Decelerate()
 
-        If myArrow.Velocity < 0 Then
+        If MyBody.Velocity < 0 Then
 
             ' Calculate potential new velocity
-            Dim newVelocity As Double = myArrow.Velocity + (myArrow.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
+            Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
 
             If newVelocity > 0 Then
 
-                myArrow.Velocity = 0
+                MyBody.Velocity = 0
 
             Else
 
-                myArrow.Velocity = newVelocity
+                MyBody.Velocity = newVelocity
 
             End If
 
         End If
 
-        If myArrow.Velocity > 0 Then
+        If MyBody.Velocity > 0 Then
 
             ' Calculate potential new velocity
-            Dim newVelocity As Double = myArrow.Velocity + (-myArrow.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
+            Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
 
             If newVelocity < 0 Then
 
-                myArrow.Velocity = 0
+                MyBody.Velocity = 0
 
             Else
 
-                myArrow.Velocity = newVelocity
+                MyBody.Velocity = newVelocity
 
             End If
 
