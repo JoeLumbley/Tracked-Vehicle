@@ -45,6 +45,9 @@ Public Structure ArrowVector
 
     Public Pen As Pen
 
+    Public ReversePen As Pen
+
+
     Public Center As PointF
 
     Public Velocity As Double
@@ -59,11 +62,17 @@ Public Structure ArrowVector
 
     Public Length As Integer
 
+    Public ReverseLength As Integer
+
+
     Public MinLength As Integer
 
     Public MaxLength As Integer
 
     Public Width As Single
+
+    Public ReverseWidth As Single
+
 
     Public MinWidth As Integer
 
@@ -74,6 +83,9 @@ Public Structure ArrowVector
     Public AngleInRadians As Single
 
     Public EndPoint As PointF
+
+    Public ReverseEndPoint As PointF
+
 
     Public Sub New(pen As Pen,
                    center As PointF,
@@ -89,6 +101,9 @@ Public Structure ArrowVector
         Me.Acceleration.Y = acceleration
 
         Me.Pen = pen
+
+        Me.ReversePen = New Pen(Color.White, 5)
+
 
         Me.Center = center
 
@@ -145,6 +160,38 @@ Public Structure ArrowVector
         EndPoint = New PointF(Center.X + Length * Cos(AngleInRadians),
                               Center.Y + Length * Sin(AngleInRadians))
 
+
+        'ReverseEndPoint = New PointF(Center.X + Length * Cos(AngleInRadians),
+        '                      Center.Y + Length * Sin(AngleInRadians))
+
+        '' Calculate the endpoint of the line using trigonometry
+        'EndPoint = New PointF(Center.X + Length * Math.Cos(AngleInRadians),
+        '              Center.Y + Length * Math.Sin(AngleInRadians))
+
+
+
+
+        ReverseLength = GetReverseLength(Velocity, MaxVelocity, MinLength, MaxLength)
+
+        ReverseWidth = GetReverseWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
+
+
+
+
+
+
+        ' Calculate the reverse endpoint by adding π to the angle
+        ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(AngleInRadians + Math.PI),
+                             Center.Y + ReverseLength * Math.Sin(AngleInRadians + Math.PI))
+
+        ReversePen.Color = Color.White
+
+        ReversePen.Width = ReverseWidth
+
+        ReversePen.StartCap = Drawing2D.LineCap.Round
+
+        ReversePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+
         UpdateMovement(deltaTime)
 
     End Sub
@@ -170,8 +217,15 @@ Public Structure ArrowVector
     Public Sub DrawLineFromCenterGivenLenghtAndAngle(g As Graphics)
         ' Draw a line of given length from the given center point at a given angle.
 
-        ' Draw the line.
+
+        ' Draw reverse arrow.
+        g.DrawLine(ReversePen, Center, ReverseEndPoint)
+
+
+        ' Draw arrow
         g.DrawLine(Pen, Center, EndPoint)
+
+
 
     End Sub
 
@@ -204,6 +258,54 @@ Public Structure ArrowVector
         End If
 
     End Function
+
+
+
+
+
+
+
+
+    Function GetReverseLength(velocity As Double, maxVelocity As Double, minlength As Double, maxlength As Double) As Double
+        ' Reverse the velocity
+        Dim ReversedVelocity As Double = -velocity
+
+        ' Normalize the reversed velocity
+        Dim NormalizedVelocity As Double = ReversedVelocity / maxVelocity
+
+        ' Interpolate the length
+        Dim Length As Double = minlength + NormalizedVelocity * (maxlength - minlength)
+
+        Return Length
+    End Function
+
+    Function GetReverseWidth(velocity As Double, maxVelocity As Double, minWidth As Double, maxWidth As Double) As Double
+        ' Reverse the velocity
+        Dim ReversedVelocity As Double = -velocity
+
+        If ReversedVelocity > 0 Then
+            ' Normalize the reversed velocity
+            Dim NormalizedVelocity As Double = ReversedVelocity / maxVelocity
+
+            ' Interpolate the width
+            Return minWidth + NormalizedVelocity * (maxWidth - minWidth)
+        Else
+            Return minWidth
+        End If
+    End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 End Structure
 
@@ -292,11 +394,13 @@ Public Structure Body
 
         RotatedBody = New PointF(Body.Length - 1) {}
 
-        KeyboardHintsFont = New Font("Segoe UI", 8)
+        KeyboardHintsFont = New Font("Segoe UI", 10)
 
         KeyboardHints = {
             New PointF(HalfWidth - 10, -HalfHeight + 10),
-            New PointF(HalfWidth - 10, HalfHeight - 10)
+            New PointF(HalfWidth - 10, HalfHeight - 10),
+            New PointF(HalfWidth + 20, -HalfHeight + Me.Height / 2),
+            New PointF(-HalfWidth - 20, -HalfHeight + Me.Height / 2)
         }
 
         RotatedKeyboardHints = New PointF(KeyboardHints.Length - 1) {}
@@ -345,6 +449,12 @@ Public Structure Body
         g?.DrawString("A", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
 
         g?.DrawString("D", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
+
+        g?.DrawString("W", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(2), AlineCenterMiddle)
+
+        g?.DrawString("S", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(3), AlineCenterMiddle)
+
+
 
     End Sub
 
@@ -770,9 +880,11 @@ Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, 100, 30)
 
     Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0, 0, 400, 30)
+
+    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, MyBody.MaxVelocity, 30)
+
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
