@@ -135,13 +135,27 @@ Public Structure ArrowVector
 
     End Sub
 
+
+    Public Function DegreesToRadians(angleInDegrees As Single)
+
+        Return angleInDegrees * (PI / 180)
+
+    End Function
+
+    Public Function ReverseAngleInRadians(angleInDegrees As Single)
+
+        AngleInRadians = DegreesToRadians(angleInDegrees)
+
+        Return AngleInRadians + Math.PI
+
+    End Function
+
+
     Public Sub Update(ByVal deltaTime As TimeSpan)
 
         Length = GetLength(Velocity, MaxVelocity, MinLength, MaxLength)
 
         Width = GetWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
-
-        'Pen = New Pen() With {.EndCap = Drawing2D.LineCap.ArrowAnchor, .StartCap = Drawing2D.LineCap.Round}
 
         Pen.Width = Width
 
@@ -149,8 +163,10 @@ Public Structure ArrowVector
 
         Pen.EndCap = Drawing2D.LineCap.ArrowAnchor
 
-        ' Convert angle from degrees to radians.
-        AngleInRadians = AngleInDegrees * (PI / 180)
+        '' Convert angle from degrees to radians.
+        'AngleInRadians = AngleInDegrees * (PI / 180)
+
+        AngleInRadians = DegreesToRadians(AngleInDegrees)
 
         ' Set velocity based on angle
         VelocityVector.X = Cos(AngleInRadians) * Velocity
@@ -160,37 +176,25 @@ Public Structure ArrowVector
         EndPoint = New PointF(Center.X + Length * Cos(AngleInRadians),
                               Center.Y + Length * Sin(AngleInRadians))
 
-
-        'ReverseEndPoint = New PointF(Center.X + Length * Cos(AngleInRadians),
-        '                      Center.Y + Length * Sin(AngleInRadians))
-
-        '' Calculate the endpoint of the line using trigonometry
-        'EndPoint = New PointF(Center.X + Length * Math.Cos(AngleInRadians),
-        '              Center.Y + Length * Math.Sin(AngleInRadians))
-
-
-
-
         ReverseLength = GetReverseLength(Velocity, MaxVelocity, MinLength, MaxLength)
 
         ReverseWidth = GetReverseWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
-
-
-
-
-
-
-        ' Calculate the reverse endpoint by adding π to the angle
-        ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(AngleInRadians + Math.PI),
-                             Center.Y + ReverseLength * Math.Sin(AngleInRadians + Math.PI))
-
-        ReversePen.Color = Color.White
 
         ReversePen.Width = ReverseWidth
 
         ReversePen.StartCap = Drawing2D.LineCap.Round
 
         ReversePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+
+        ' Calculate the reverse endpoint by adding π to the angle
+        ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(ReverseAngleInRadians(AngleInDegrees)),
+                             Center.Y + ReverseLength * Math.Sin(ReverseAngleInRadians(AngleInDegrees)))
+
+
+
+        '' Calculate the reverse endpoint by adding π to the angle
+        'ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(AngleInRadians + Math.PI),
+        '                     Center.Y + ReverseLength * Math.Sin(AngleInRadians + Math.PI))
 
         UpdateMovement(deltaTime)
 
@@ -881,7 +885,7 @@ Public Class Form1
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
 
-    Private MyBody As New Body(Brushes.Gray, New PointF(0, 0), 128, 64, 0, 0, 400, 30)
+    Private MyBody As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 400, 30)
 
     Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, MyBody.MaxVelocity, 30)
 
