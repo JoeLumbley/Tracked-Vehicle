@@ -398,11 +398,12 @@ Public Structure Body
 
         RotatedBody = New PointF(Body.Length - 1) {}
 
-        KeyboardHintsFont = New Font("Segoe UI", 10)
+        KeyboardHintsFont = New Font("Segoe UI", 14, FontStyle.Bold)
+
 
         KeyboardHints = {
-            New PointF(HalfWidth - 10, -HalfHeight + 10),
-            New PointF(HalfWidth - 10, HalfHeight - 10),
+            New PointF(HalfWidth - 10, -HalfHeight - 20),
+            New PointF(HalfWidth - 10, HalfHeight + 20),
             New PointF(HalfWidth + 20, -HalfHeight + Me.Height / 2),
             New PointF(-HalfWidth - 20, -HalfHeight + Me.Height / 2)
         }
@@ -450,13 +451,31 @@ Public Structure Body
 
         g?.FillPolygon(Brush, RotatedBody)
 
-        g?.DrawString("A", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(0), AlineCenterMiddle)
+        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(0).X - 17, RotatedKeyboardHints(0).Y - 17, 34, 34)
 
-        g?.DrawString("D", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(1), AlineCenterMiddle)
 
-        g?.DrawString("W", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(2), AlineCenterMiddle)
+        g?.DrawString("A", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(0), AlineCenterMiddle)
 
-        g?.DrawString("S", KeyboardHintsFont, Brushes.Black, RotatedKeyboardHints(3), AlineCenterMiddle)
+
+
+        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(1).X - 17, RotatedKeyboardHints(1).Y - 17, 34, 34)
+
+
+        g?.DrawString("D", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(1), AlineCenterMiddle)
+
+
+        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(2).X - 17, RotatedKeyboardHints(2).Y - 17, 34, 34)
+
+
+        g?.DrawString("W", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(2), AlineCenterMiddle)
+
+
+
+
+        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
+
+
+        g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
 
 
 
