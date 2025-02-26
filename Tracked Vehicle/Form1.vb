@@ -358,6 +358,8 @@ Public Structure Body
 
     Public KeyboardHintsFont As Font
 
+    Public ShowKeyboardHints As Boolean
+
     Public Sub New(brush As Brush,
                    center As PointF,
                    width As Integer,
@@ -441,19 +443,26 @@ Public Structure Body
 
         g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
+        g?.FillEllipse(Brushes.LightGray, Center.X - 125, Center.Y - 125, 250, 250)
+
         g?.FillPolygon(Brush, RotatedBody)
 
-        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(0).X - 17, RotatedKeyboardHints(0).Y - 17, 34, 34)
-        g?.DrawString("A", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(0), AlineCenterMiddle)
+        If ShowKeyboardHints Then
 
-        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(1).X - 17, RotatedKeyboardHints(1).Y - 17, 34, 34)
-        g?.DrawString("D", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(1), AlineCenterMiddle)
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(0).X - 17, RotatedKeyboardHints(0).Y - 17, 34, 34)
+            g?.DrawString("A", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(0), AlineCenterMiddle)
 
-        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(2).X - 17, RotatedKeyboardHints(2).Y - 17, 34, 34)
-        g?.DrawString("W", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(2), AlineCenterMiddle)
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(1).X - 17, RotatedKeyboardHints(1).Y - 17, 34, 34)
+            g?.DrawString("D", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(1), AlineCenterMiddle)
 
-        g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
-        g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(2).X - 17, RotatedKeyboardHints(2).Y - 17, 34, 34)
+            g?.DrawString("W", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(2), AlineCenterMiddle)
+
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
+            g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
+
+
+        End If
 
     End Sub
 
@@ -838,15 +847,22 @@ Public Class Form1
 
     Private EDown As Boolean
 
+    Private F1Down As Boolean
+
+    Private F1DownHandled As Boolean
+
+
     Private InstructionsFont As New Font("Segoe UI", 14)
 
     Private InstructionsLocation As New PointF(0, 0)
 
     Private InstructionsText As New String("Use A or D keys to rotate the vehicle" &
                                            Environment.NewLine &
-                                           "W for forward and S for reverse." &
+                                           "W for forward, S for reverse" &
                                            Environment.NewLine &
-                                           "E for emergency stop.")
+                                           "E for emergency stop and " &
+                                           Environment.NewLine &
+                                           "F1 to Show/Hide Keyboard Hints.")
     Private Player As AudioPlayer
 
 
@@ -1055,6 +1071,31 @@ Public Class Form1
 
         End If
 
+        If F1Down Then
+
+            If MyBody.ShowKeyboardHints Then
+
+                If Not F1DownHandled Then
+
+                    MyBody.ShowKeyboardHints = False
+
+                    F1DownHandled = True
+
+                End If
+
+            Else
+                If Not F1DownHandled Then
+
+                    MyBody.ShowKeyboardHints = True
+
+                    F1DownHandled = True
+
+                End If
+
+            End If
+
+        End If
+
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
@@ -1107,6 +1148,13 @@ Public Class Form1
 
         End If
 
+        If e.KeyCode = Keys.F1 Then
+
+            F1Down = True
+
+        End If
+
+
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
@@ -1141,6 +1189,15 @@ Public Class Form1
             EDown = False
 
         End If
+
+        If e.KeyCode = Keys.F1 Then
+
+            F1Down = False
+
+            F1DownHandled = False
+
+        End If
+
 
     End Sub
 
