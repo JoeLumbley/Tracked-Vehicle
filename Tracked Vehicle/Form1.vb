@@ -42,9 +42,6 @@ Public Structure DeltaTimeStructure
 End Structure
 
 Public Structure ArrowVector
-    ' A vector is a mathematical object that has both a magnitude (or length) and
-    ' a direction. A vector can be visualized as an arrow.
-
 
     Public Pen As Pen
 
@@ -189,17 +186,20 @@ Public Structure ArrowVector
 
         ' Draw reverse arrow (Negative Vector) ←
         g.DrawLine(ReversePen, Center, ReverseEndPoint)
+        ' We are visualizing our negative vector as an arrow that points in the
+        ' exact opposite direction.
+
+        ' Draw forward arrow (Vector) →
+        g.DrawLine(Pen, Center, EndPoint)
+        ' We are visualizing our vector as an arrow.
+
+        ' Vector
+        ' A vector is a mathematical object that has both a magnitude (or length)
+        ' and a direction.
 
         ' Negative Vector
         ' The opposite or negative of a vector is another vector that has the same
         ' magnitude but points in the exact opposite direction.
-
-        ' Draw forward arrow (Vector) →
-        g.DrawLine(Pen, Center, EndPoint)
-
-        ' Vector
-        ' A vector is a mathematical object that has both a magnitude (or length)
-        ' and a direction. We are visualizing our vector as an arrow.
 
     End Sub
 
