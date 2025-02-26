@@ -93,12 +93,17 @@ Public Structure ArrowVector
                    velocity As Double,
                    maxVelocity As Double, acceleration As Double)
 
-        Me.Acceleration.X = acceleration
-        Me.Acceleration.Y = acceleration
-
         Me.Pen = pen
 
+        pen.StartCap = Drawing2D.LineCap.Round
+
+        pen.EndCap = Drawing2D.LineCap.ArrowAnchor
+
         ReversePen = New Pen(Color.White, 5)
+
+        ReversePen.StartCap = Drawing2D.LineCap.Round
+
+        ReversePen.EndCap = Drawing2D.LineCap.ArrowAnchor
 
         Me.Center = center
 
@@ -108,8 +113,11 @@ Public Structure ArrowVector
             Me.AngleInDegrees = 0
         End If
 
-        ' Convert angle from degrees to radians.
-        AngleInRadians = Me.AngleInDegrees * (PI / 180)
+        AngleInRadians = DegreesToRadians(angleInDegrees)
+
+        ' Calculate the endpoint of the line using trigonometry
+        EndPoint = New PointF(center.X + Length * Cos(AngleInRadians),
+                              center.Y + Length * Sin(AngleInRadians))
 
         Me.MinLength = minLength
         Me.MaxLength = maxLength
@@ -128,6 +136,17 @@ Public Structure ArrowVector
 
         Width = GetWidth(Me.Velocity, Me.MaxVelocity, Me.MinWidth, Me.MaxWidth)
 
+        pen.Width = Width
+
+        ReverseLength = GetReverseLength(velocity, maxVelocity, minLength, maxLength)
+
+        ReverseWidth = GetReverseWidth(velocity, maxVelocity, minWidth, maxWidth)
+
+        ReversePen.Width = ReverseWidth
+
+        Me.Acceleration.X = acceleration
+        Me.Acceleration.Y = acceleration
+
     End Sub
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
@@ -138,9 +157,8 @@ Public Structure ArrowVector
 
         Pen.Width = Width
 
-        Pen.StartCap = Drawing2D.LineCap.Round
+        ReversePen.Width = ReverseWidth
 
-        Pen.EndCap = Drawing2D.LineCap.ArrowAnchor
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
@@ -156,13 +174,8 @@ Public Structure ArrowVector
 
         ReverseWidth = GetReverseWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
 
-        ReversePen.Width = ReverseWidth
 
-        ReversePen.StartCap = Drawing2D.LineCap.Round
-
-        ReversePen.EndCap = Drawing2D.LineCap.ArrowAnchor
-
-        ' Calculate the reverse endpoint by adding π to the angle
+        ' Calculate the reverse endpoint.
         ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(ReverseAngleInRadians(AngleInDegrees)),
                              Center.Y + ReverseLength * Math.Sin(ReverseAngleInRadians(AngleInDegrees)))
 
