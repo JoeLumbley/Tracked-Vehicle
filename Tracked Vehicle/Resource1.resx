@@ -118,31 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ambientnoise" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\ambientnoise.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="emergencystop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Sounds\emergencystop.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="idle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Sounds\idle.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="running" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Sounds\running.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise2.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise3.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise4.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise5.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tracknoise6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Sounds\tracknoise6.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

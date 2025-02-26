@@ -799,13 +799,15 @@ Public Class Form1
 
     Private EDown As Boolean
 
-    Private InstructionsFont As New Font("Segoe UI", 12)
+    Private InstructionsFont As New Font("Segoe UI", 14)
 
     Private InstructionsLocation As New PointF(0, 0)
 
     Private InstructionsText As New String("Use A or D keys to rotate the vehicle" &
                                            Environment.NewLine &
-                                           "W for forward and S for reverse.")
+                                           "W for forward and S for reverse." &
+                                           Environment.NewLine &
+                                           "E for emergency stop.")
     Private Player As AudioPlayer
 
 
@@ -832,6 +834,17 @@ Public Class Form1
         Player.AddSound("running", FilePath)
 
         Player.SetVolume("running", 400)
+
+
+
+        FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
+
+        Player.AddSound("emergencystop", FilePath)
+
+        Player.SetVolume("emergencystop", 400)
+
+
+
 
     End Sub
 
@@ -975,6 +988,36 @@ Public Class Form1
 
             EmergencyStop()
 
+            If MyBody.Velocity <> 0 Then
+
+                If Not Player.IsPlaying("emergencystop") Then
+
+                    Player.LoopSound("emergencystop")
+
+                End If
+
+            Else
+
+                If Player.IsPlaying("emergencystop") Then
+
+                    Player.PauseSound("emergencystop")
+
+                End If
+
+
+            End If
+
+
+        Else
+
+            If Player.IsPlaying("emergencystop") Then
+
+                Player.PauseSound("emergencystop")
+
+            End If
+
+
+
         End If
 
     End Sub
@@ -1087,6 +1130,11 @@ Public Class Form1
         FilePath = Path.Combine(Application.StartupPath, "running.mp3")
 
         CreateFileFromResource(FilePath, My.Resources.Resource1.running)
+
+        FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
+
+        CreateFileFromResource(FilePath, My.Resources.Resource1.emergencystop)
+
 
     End Sub
 

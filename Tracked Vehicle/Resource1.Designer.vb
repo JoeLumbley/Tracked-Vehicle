@@ -67,9 +67,9 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
-        Friend Shared ReadOnly Property ambientnoise() As Byte()
+        Friend Shared ReadOnly Property emergencystop() As Byte()
             Get
-                Dim obj As Object = ResourceManager.GetObject("ambientnoise", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("emergencystop", resourceCulture)
                 Return CType(obj,Byte())
             End Get
         End Property
@@ -90,66 +90,6 @@ Namespace My.Resources
         Friend Shared ReadOnly Property running() As Byte()
             Get
                 Dim obj As Object = ResourceManager.GetObject("running", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise2() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise2", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise3() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise3", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise4() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise4", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise5() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise5", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend Shared ReadOnly Property tracknoise6() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tracknoise6", resourceCulture)
                 Return CType(obj,Byte())
             End Get
         End Property
