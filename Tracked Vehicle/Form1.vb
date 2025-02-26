@@ -141,11 +141,12 @@ Public Structure ArrowVector
 
     Public Function DegreesToRadians(angleInDegrees As Single) As Single
 
-        ' Convert degrees to radians by multiplying the angle by PI / 180.
+        ' Convert degrees to radians by multiplying the angle by π / 180.
         Return angleInDegrees * (PI / 180)
 
         ' This formula converts degrees to radians because one full circle is
         ' 360 degrees or 2π radians, hence 1 degree equals π / 180 radians.
+        ' π = 3.1415926535897931
 
     End Function
 
