@@ -173,33 +173,34 @@ Public Structure ArrowVector
     Public Sub UpdateMovement(ByVal deltaTime As TimeSpan)
 
         'Move our arrow horizontally.
-        Center.X += CSng(VelocityVector.X * deltaTime.TotalSeconds) 'Δs = V * Δt
-        'Displacement = Velocity x Delta Time
+        Center.X += CSng(VelocityVector.X * deltaTime.TotalSeconds)
 
         'Move our arrow vertically.
-        Center.Y += CSng(VelocityVector.Y * deltaTime.TotalSeconds) 'Δs = V * Δt
+        Center.Y += CSng(VelocityVector.Y * deltaTime.TotalSeconds)
+
+        'Δs = V * Δt
         'Displacement = Velocity x Delta Time
 
     End Sub
 
     Public Sub Draw(g As Graphics)
 
-        ' Draw reverse arrow (Negative Vector) ←
+        ' Draw reverse arrow (Negative Vector ←)
         g.DrawLine(ReversePen, Center, ReverseEndPoint)
         ' We are visualizing our negative vector as an arrow that points in the
-        ' exact opposite direction.
+        ' opposite direction.
 
-        ' Draw forward arrow (Vector) →
+        ' Draw forward arrow (Vector →)
         g.DrawLine(Pen, Center, EndPoint)
         ' We are visualizing our vector as an arrow.
 
-        ' Vector
+        ' Vector →
         ' A vector is a mathematical object that has both a magnitude (or length)
         ' and a direction.
 
-        ' Negative Vector
+        ' Negative Vector ←
         ' The opposite or negative of a vector is another vector that has the same
-        ' magnitude but points in the exact opposite direction.
+        ' magnitude but points in the opposite direction.
 
     End Sub
 
