@@ -42,6 +42,15 @@ Public Structure DeltaTimeStructure
 End Structure
 
 Public Structure ArrowVector
+    ' A vector is a mathematical object that has both a magnitude (or length) and
+    ' a direction. A vector can be visualized as an arrow.
+
+    ' Negative Vector
+    ' The opposite or negative of a vector is another vector that has the same
+    ' magnitude but points in the exact opposite direction.
+
+    ' Vectors and their opposites are widely used in fields like physics,
+    ' engineering, computer graphics, and game development.
 
     Public Pen As Pen
 
@@ -202,20 +211,26 @@ Public Structure ArrowVector
 
     Public Sub Draw(g As Graphics)
 
-        DrawLineFromCenterGivenLenghtAndAngle(g)
-
-    End Sub
-
-    Public Sub DrawLineFromCenterGivenLenghtAndAngle(g As Graphics)
-        ' Draw a line of given length from the given center point at a given angle.
-
-        ' Draw reverse arrow.
+        ' Draw reverse arrow (Negative Vector).
         g.DrawLine(ReversePen, Center, ReverseEndPoint)
 
-        ' Draw arrow
+        ' Draw forward arrow (Vector)
         g.DrawLine(Pen, Center, EndPoint)
 
+        'DrawLineFromCenterGivenLenghtAndAngle(g)
+
     End Sub
+
+    'Public Sub DrawLineFromCenterGivenLenghtAndAngle(g As Graphics)
+    '    ' Draw a line of given length from the given center point at a given angle.
+
+    '    ' Draw reverse arrow (Negative Vector).
+    '    g.DrawLine(ReversePen, Center, ReverseEndPoint)
+
+    '    ' Draw forward arrow (Vector)
+    '    g.DrawLine(Pen, Center, EndPoint)
+
+    'End Sub
 
     Function GetLength(velocity As Double, maxVelocity As Double, minlength As Double, maxlength As Double) As Double
 
