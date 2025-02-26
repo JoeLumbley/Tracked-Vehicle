@@ -139,17 +139,22 @@ Public Structure ArrowVector
 
     End Sub
 
-    Public Function DegreesToRadians(angleInDegrees As Single)
+    Public Function DegreesToRadians(angleInDegrees As Single) As Single
 
+        ' Convert degrees to radians by multiplying the angle by PI / 180.
         Return angleInDegrees * (PI / 180)
+
+        ' This formula converts degrees to radians because one full circle is
+        ' 360 degrees or 2π radians, hence 1 degree equals π / 180 radians.
 
     End Function
 
-    Public Function ReverseAngleInRadians(angleInDegrees As Single)
+    Public Function ReverseAngleInRadians(angleInDegrees As Single) As Single
 
         AngleInRadians = DegreesToRadians(angleInDegrees)
 
-        Return AngleInRadians + Math.PI
+        ' Calculate the reverse angle by adding π to the angle
+        Return AngleInRadians + PI
 
     End Function
 
@@ -217,20 +222,7 @@ Public Structure ArrowVector
         ' Draw forward arrow (Vector)
         g.DrawLine(Pen, Center, EndPoint)
 
-        'DrawLineFromCenterGivenLenghtAndAngle(g)
-
     End Sub
-
-    'Public Sub DrawLineFromCenterGivenLenghtAndAngle(g As Graphics)
-    '    ' Draw a line of given length from the given center point at a given angle.
-
-    '    ' Draw reverse arrow (Negative Vector).
-    '    g.DrawLine(ReversePen, Center, ReverseEndPoint)
-
-    '    ' Draw forward arrow (Vector)
-    '    g.DrawLine(Pen, Center, EndPoint)
-
-    'End Sub
 
     Function GetLength(velocity As Double, maxVelocity As Double, minlength As Double, maxlength As Double) As Double
 
