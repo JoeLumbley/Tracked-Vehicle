@@ -1004,9 +1004,7 @@ Public Class Form1
 
                 End If
 
-
             End If
-
 
         Else
 
@@ -1015,8 +1013,6 @@ Public Class Form1
                 Player.PauseSound("emergencystop")
 
             End If
-
-
 
         End If
 
