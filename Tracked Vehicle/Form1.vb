@@ -45,12 +45,6 @@ Public Structure ArrowVector
     ' A vector is a mathematical object that has both a magnitude (or length) and
     ' a direction. A vector can be visualized as an arrow.
 
-    ' Negative Vector
-    ' The opposite or negative of a vector is another vector that has the same
-    ' magnitude but points in the exact opposite direction.
-
-    ' Vectors and their opposites are widely used in fields like physics,
-    ' engineering, computer graphics, and game development.
 
     Public Pen As Pen
 
@@ -139,27 +133,6 @@ Public Structure ArrowVector
 
     End Sub
 
-    Public Function DegreesToRadians(angleInDegrees As Single) As Single
-
-        ' Convert degrees to radians by multiplying the angle by π / 180.
-        Return angleInDegrees * (PI / 180)
-
-        ' This formula converts degrees to radians because one full circle is
-        ' 360 degrees or 2π radians, hence 1 degree equals π / 180 radians.
-        ' π = 3.1415926535897931
-
-    End Function
-
-    Public Function ReverseAngleInRadians(angleInDegrees As Single) As Single
-
-        AngleInRadians = DegreesToRadians(angleInDegrees)
-
-        ' Calculate the reverse angle by adding π to the angle
-        Return AngleInRadians + PI
-
-    End Function
-
-
     Public Sub Update(ByVal deltaTime As TimeSpan)
 
         Length = GetLength(Velocity, MaxVelocity, MinLength, MaxLength)
@@ -171,9 +144,6 @@ Public Structure ArrowVector
         Pen.StartCap = Drawing2D.LineCap.Round
 
         Pen.EndCap = Drawing2D.LineCap.ArrowAnchor
-
-        '' Convert angle from degrees to radians.
-        'AngleInRadians = AngleInDegrees * (PI / 180)
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
@@ -217,11 +187,19 @@ Public Structure ArrowVector
 
     Public Sub Draw(g As Graphics)
 
-        ' Draw reverse arrow (Negative Vector).
+        ' Draw reverse arrow (Negative Vector) ←
         g.DrawLine(ReversePen, Center, ReverseEndPoint)
 
-        ' Draw forward arrow (Vector)
+        ' Negative Vector
+        ' The opposite or negative of a vector is another vector that has the same
+        ' magnitude but points in the exact opposite direction.
+
+        ' Draw forward arrow (Vector) →
         g.DrawLine(Pen, Center, EndPoint)
+
+        ' Vector
+        ' A vector is a mathematical object that has both a magnitude (or length)
+        ' and a direction. We are visualizing our vector as an arrow.
 
     End Sub
 
@@ -256,6 +234,7 @@ Public Structure ArrowVector
     End Function
 
     Function GetReverseLength(velocity As Double, maxVelocity As Double, minlength As Double, maxlength As Double) As Double
+
         ' Reverse the velocity
         Dim ReversedVelocity As Double = -velocity
 
@@ -266,22 +245,60 @@ Public Structure ArrowVector
         Dim Length As Double = minlength + NormalizedVelocity * (maxlength - minlength)
 
         Return Length
+
     End Function
 
     Function GetReverseWidth(velocity As Double, maxVelocity As Double, minWidth As Double, maxWidth As Double) As Double
+
         ' Reverse the velocity
         Dim ReversedVelocity As Double = -velocity
 
         If ReversedVelocity > 0 Then
+
             ' Normalize the reversed velocity
             Dim NormalizedVelocity As Double = ReversedVelocity / maxVelocity
 
             ' Interpolate the width
             Return minWidth + NormalizedVelocity * (maxWidth - minWidth)
+
         Else
+
             Return minWidth
+
         End If
+
     End Function
+
+    Public Function DegreesToRadians(angleInDegrees As Single) As Single
+
+        ' Convert degrees to radians by multiplying the angle by π / 180.
+        Return angleInDegrees * (PI / 180)
+
+        ' This formula converts degrees to radians because one full circle is
+        ' 360 degrees or 2π radians, hence 1 degree equals π / 180 radians.
+        ' π = 3.1415926535897931
+
+    End Function
+
+    Public Function ReverseAngleInRadians(angleInDegrees As Single) As Single
+
+        AngleInRadians = DegreesToRadians(angleInDegrees)
+
+        ' Calculate the reverse angle by adding π to the angle
+        Return AngleInRadians + PI
+
+    End Function
+
+    ' Negative Vector
+    ' The opposite or negative of a vector is another vector that has the same
+    ' magnitude but points in the exact opposite direction.
+
+    ' Vectors and their opposites are widely used in fields like physics,
+    ' engineering, computer graphics, and game development.
+
+    ' Game Development: Vectors are essential for simulating movement,
+    ' calculating trajectories, and handling collisions.
+
 
 End Structure
 
