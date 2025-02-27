@@ -1121,84 +1121,41 @@ Public Class Form1
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
 
-        If e.KeyCode = Keys.D Then
-
-            DDown = True
-
-        End If
-
-        If e.KeyCode = Keys.A Then
-
-            ADown = True
-
-        End If
-
-        If e.KeyCode = Keys.W Then
-
-            WDown = True
-
-        End If
-
-        If e.KeyCode = Keys.S Then
-
-            SDown = True
-
-        End If
-
-        If e.KeyCode = Keys.E Then
-
-            EDown = True
-
-        End If
-
-        If e.KeyCode = Keys.F1 Then
-
-            F1Down = True
-
-        End If
+        Select Case e.KeyCode
+            Case Keys.A
+                ADown = True
+            Case Keys.D
+                DDown = True
+            Case Keys.W
+                WDown = True
+            Case Keys.S
+                SDown = True
+            Case Keys.E
+                EDown = True
+            Case Keys.F1
+                F1Down = True
+        End Select
 
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
 
-        If e.KeyCode = Keys.D Then
-
-            DDown = False
-
-        End If
-
-        If e.KeyCode = Keys.A Then
-
-            ADown = False
-
-        End If
-
-        If e.KeyCode = Keys.W Then
-
-            WDown = False
-
-        End If
-
-        If e.KeyCode = Keys.S Then
-
-            SDown = False
-
-        End If
-
-        If e.KeyCode = Keys.E Then
-
-            EDown = False
-
-        End If
-
-        If e.KeyCode = Keys.F1 Then
-
-            F1Down = False
-
-            F1DownHandled = False
-
-        End If
+        Select Case e.KeyCode
+            Case Keys.A
+                ADown = False
+            Case Keys.D
+                DDown = False
+            Case Keys.W
+                WDown = False
+            Case Keys.S
+                SDown = False
+            Case Keys.E
+                EDown = False
+            Case Keys.F1
+                F1Down = False
+                F1DownHandled = False
+        End Select
 
     End Sub
 
