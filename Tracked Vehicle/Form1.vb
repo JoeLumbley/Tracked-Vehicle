@@ -845,7 +845,6 @@ Public Class Form1
 
     Private F1DownHandled As Boolean
 
-
     Private InstructionsFont As New Font("Segoe UI", 14)
 
     Private InstructionsLocation As New PointF(0, 0)
@@ -863,7 +862,6 @@ Public Class Form1
                                                & "E for emergency stop.")
 
     Private Player As AudioPlayer
-
 
     ' Constructor for the form.
     Public Sub New()
