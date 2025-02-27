@@ -23,7 +23,7 @@ An application simulating a tracked vehicle.
 ```vb
 Public Structure ArrowVector
 ```
-- **What it does:** This line defines a new structure named `ArrowVector`. A structure in Visual Basic is a value type that can contain data members and methods, similar to a class but more lightweight.
+- **What it does:** This line defines a new structure named `ArrowVector`. A structure in is a value type that can contain data members and methods, similar to a class but more lightweight.
 
 ### Member Variables
 ```vb
