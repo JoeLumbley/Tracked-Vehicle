@@ -8,7 +8,7 @@ An application simulating a tracked vehicle.
 
 
 
-![003](https://github.com/user-attachments/assets/3fd4e9c5-9811-491b-b19a-ad53ed998955)
+![005](https://github.com/user-attachments/assets/36838c54-e47a-4095-847e-a0cddc939731)
 
 
 
