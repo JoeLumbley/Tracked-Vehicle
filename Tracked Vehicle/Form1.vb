@@ -968,16 +968,6 @@ Public Class Form1
 
         End If
 
-        'If MyBody.ShowKeyboardHints Then
-
-        '    InstructionsText = InstructionsTextLong
-
-        'Else
-
-        '    InstructionsText = F1Notice
-
-        'End If
-
         Invalidate()
 
     End Sub
@@ -1088,6 +1078,7 @@ Public Class Form1
                 End If
 
             Else
+
                 If Not F1DownHandled Then
 
                     MyBody.ShowKeyboardHints = True
