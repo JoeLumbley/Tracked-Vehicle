@@ -421,6 +421,9 @@ Public Structure Body
         VelocityVector.X = Cos(AngleInRadians) * Me.Velocity
         VelocityVector.Y = Sin(AngleInRadians) * Me.Velocity
 
+        ShowKeyboardHints = True
+
+
     End Sub
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
