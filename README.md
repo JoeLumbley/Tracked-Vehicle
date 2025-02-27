@@ -276,17 +276,40 @@ Return angleInDegrees * (PI / 180)
 ```
 - This line performs the conversion.
 
+
+
+
+
+
+
 ### Reverse Angle Function
+
 ```vb
+
 Public Function ReverseAngleInRadians(angleInDegrees As Single) As Single
+
 ```
+
 - **What it does:** Calculates the reverse angle in radians.
 
+```vb
+    
+    AngleInRadians = DegreesToRadians(angleInDegrees)
 
+```
 
+- This line converts degrees to radians.
 
+```vb
 
+    Return AngleInRadians + PI
 
+End Function
+
+```
+
+- This line calculates the reverse angle by adding π (PI) to the angle.
+- π = 3.1415926535897931
 
 
 
