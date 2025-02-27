@@ -159,7 +159,6 @@ Public Structure ArrowVector
 
         ReversePen.Width = ReverseWidth
 
-
         AngleInRadians = DegreesToRadians(AngleInDegrees)
 
         ' Set velocity based on angle
@@ -173,7 +172,6 @@ Public Structure ArrowVector
         ReverseLength = GetReverseLength(Velocity, MaxVelocity, MinLength, MaxLength)
 
         ReverseWidth = GetReverseWidth(Velocity, MaxVelocity, MinWidth, MaxWidth)
-
 
         ' Calculate the reverse endpoint.
         ReverseEndPoint = New PointF(Center.X + ReverseLength * Math.Cos(ReverseAngleInRadians(AngleInDegrees)),
@@ -303,16 +301,11 @@ Public Structure ArrowVector
 
     End Function
 
-    ' Negative Vector
-    ' The opposite or negative of a vector is another vector that has the same
-    ' magnitude but points in the exact opposite direction.
-
     ' Vectors and their opposites are widely used in fields like physics,
     ' engineering, computer graphics, and game development.
 
     ' Game Development: Vectors are essential for simulating movement,
     ' calculating trajectories, and handling collisions.
-
 
 End Structure
 
@@ -423,7 +416,6 @@ Public Structure Body
 
         ShowKeyboardHints = True
 
-
     End Sub
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
@@ -446,7 +438,7 @@ Public Structure Body
 
         g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-        g?.FillEllipse(Brushes.LightGray, Center.X - 125, Center.Y - 125, 250, 250)
+        g?.FillEllipse(Brushes.LightGray, Center.X - 72, Center.Y - 72, 144, 144)
 
         g?.FillPolygon(Brush, RotatedBody)
 
@@ -463,7 +455,6 @@ Public Structure Body
 
             g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
             g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
-
 
         End If
 
@@ -893,16 +884,11 @@ Public Class Form1
 
         Player.SetVolume("running", 400)
 
-
-
         FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
 
         Player.AddSound("emergencystop", FilePath)
 
         Player.SetVolume("emergencystop", 400)
-
-
-
 
     End Sub
 
@@ -1157,7 +1143,6 @@ Public Class Form1
 
         End If
 
-
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
@@ -1201,7 +1186,6 @@ Public Class Form1
 
         End If
 
-
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -1229,7 +1213,6 @@ Public Class Form1
         FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
 
         CreateFileFromResource(FilePath, My.Resources.Resource1.emergencystop)
-
 
     End Sub
 
