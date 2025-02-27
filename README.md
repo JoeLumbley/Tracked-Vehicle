@@ -1,7 +1,7 @@
 # Tracked Vehicle
 
 
-
+An application simulating a tracked vehicle.
 
 
 
