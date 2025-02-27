@@ -853,15 +853,15 @@ Public Class Form1
 
     Private F1Notice As New String("Show / Hide Keyboard Hints > F1")
 
-    Private InstructionsText As New String("Rotate Clockwise > D" _
-                                           & Environment.NewLine _
-                                           & "Rotate Counterclockwise > A" _
-                                           & Environment.NewLine _
-                                           & "Forward > W" _
-                                           & Environment.NewLine _
-                                           & "Reverse > S" _
-                                           & Environment.NewLine _
-                                           & "Stop > E")
+    Private InstructionsText As New String("Rotate Counterclockwise > A" _
+                                         & Environment.NewLine _
+                                         & "Rotate Clockwise > D" _
+                                         & Environment.NewLine _
+                                         & "Forward > W" _
+                                         & Environment.NewLine _
+                                         & "Reverse > S" _
+                                         & Environment.NewLine _
+                                         & "Stop > E")
 
     Private Player As AudioPlayer
 
