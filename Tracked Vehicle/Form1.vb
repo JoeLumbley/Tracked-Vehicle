@@ -850,13 +850,18 @@ Public Class Form1
 
     Private InstructionsLocation As New PointF(0, 0)
 
-    Private InstructionsText As New String("Use A or D keys to rotate the vehicle" &
-                                           Environment.NewLine &
-                                           "W for forward, S for reverse" &
-                                           Environment.NewLine &
-                                           "E for emergency stop and " &
-                                           Environment.NewLine &
-                                           "F1 to Show/Hide Keyboard Hints.")
+    Private InstructionsText As String
+
+    Private InstructionsTextShort As New String("F1 to Show/Hide Keyboard Hints.")
+
+    Private InstructionsTextLong As New String("F1 to Show/Hide Keyboard Hints." _
+                                               & Environment.NewLine _
+                                               & "Use A or D keys to rotate the vehicle," _
+                                               & Environment.NewLine _
+                                               & "W for forward or S for reverse," _
+                                               & Environment.NewLine _
+                                               & "E for emergency stop.")
+
     Private Player As AudioPlayer
 
 
@@ -960,6 +965,16 @@ Public Class Form1
                 Player.PauseSound("running")
 
             End If
+
+        End If
+
+        If MyBody.ShowKeyboardHints Then
+
+            InstructionsText = InstructionsTextLong
+
+        Else
+
+            InstructionsText = InstructionsTextShort
 
         End If
 
@@ -1096,7 +1111,8 @@ Public Class Form1
 
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-        e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+        e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation, New StringFormat With {.Alignment = StringAlignment.Near,
+                                                   .LineAlignment = StringAlignment.Near})
 
         MyBody.Draw(e.Graphics)
 
