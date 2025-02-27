@@ -849,8 +849,8 @@ Public Class Form1
 
     Private InstructionsLocation As New PointF(0, 35)
 
-    'Private InstructionsText As String
     Private F1NoticeLocation As New PointF(0, 0)
+
     Private F1Notice As New String("Show / Hide Keyboard Hints > F1")
 
     Private InstructionsText As New String("Rotate Clockwise > D" _
