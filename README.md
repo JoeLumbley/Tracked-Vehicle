@@ -15,66 +15,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ArrowVector and Body Structures: A Detailed Walkthrough
-
-Welcome to this coding lesson! In this guide, we will thoroughly explore the `ArrowVector` and `Body` structures in Visual Basic. We will break down each line of code, explaining its purpose and how it contributes to the overall functionality of the program. This lesson is intended for beginners, so we will take our time and ensure clarity at every step.
+# Code Walkthrough
 
 ## ArrowVector Structure
 
