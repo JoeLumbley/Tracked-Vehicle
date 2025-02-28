@@ -821,14 +821,6 @@ Public Structure AudioPlayer
 
 End Structure
 
-
-
-
-
-
-
-
-
 Public Structure XboxControllers
 
     <DllImport("XInput1_4.dll")>
@@ -1675,31 +1667,6 @@ Public Structure XboxControllers
     End Sub
 
 End Structure
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Public Class Form1
