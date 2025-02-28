@@ -3,8 +3,8 @@
 Step into the world of tracked vehicles, where tanks and bulldozers come to life! This application simulates the unique dynamics of vehicles equipped with tracks, offering an engaging experience for enthusiasts and developers alike.
 
 
-![007](https://github.com/user-attachments/assets/3260603b-9bf2-4f02-a588-6dc7b16a37a4)
 
+![008](https://github.com/user-attachments/assets/bb3ba7bd-7404-4b6a-a9d6-29f38f2ab363)
 
 
 
