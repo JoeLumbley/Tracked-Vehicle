@@ -1811,6 +1811,54 @@ Public Class Form1
         End If
 
 
+
+
+
+
+        If Controllers.LeftThumbstickUp(0) Then
+
+            If MyBody.Velocity < MyBody.MaxVelocity Then
+
+                MyBody.Velocity += 1
+
+            Else
+
+                MyBody.Velocity = MyBody.MaxVelocity
+
+            End If
+
+        ElseIf Controllers.LeftThumbstickDown(0) Then
+
+            If MyBody.Velocity > -MyBody.MaxVelocity Then
+
+                MyBody.Velocity += -1
+
+            Else
+
+                MyBody.Velocity = -MyBody.MaxVelocity
+
+            End If
+
+        Else
+
+            Decelerate()
+
+        End If
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         myArrow.Center = MyBody.Center
 
         myArrow.AngleInDegrees = MyBody.AngleInDegrees
@@ -1888,6 +1936,12 @@ Public Class Form1
 
         End If
 
+
+
+
+
+
+
         If WDown Then
 
             If MyBody.Velocity < MyBody.MaxVelocity Then
@@ -1917,6 +1971,19 @@ Public Class Form1
             Decelerate()
 
         End If
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         If EDown Then
 
