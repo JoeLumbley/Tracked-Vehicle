@@ -34,6 +34,8 @@ Ready to conquer the terrain? Let’s get started! 🏎️💨
 
 # Code Walkthrough
 
+This article provides an in-depth walkthrough of a Visual Basic .NET application that simulates the movement and dynamics of tracked vehicles, such as tanks and bulldozers. It covers the implementation of key components like ArrowVector, Body, and the Form1 class, which handle physics, user input, collision detection, rendering, and sound effects to create a realistic simulation.
+
 ## ArrowVector Structure
 
 ### Definition
