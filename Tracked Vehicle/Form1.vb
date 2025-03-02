@@ -353,6 +353,10 @@ Public Structure Body
 
     Public ShowKeyboardHints As Boolean
 
+    Public TimeToNextRotation As TimeSpan
+
+    Private LastRotationTime As DateTime
+
     Public Sub New(brush As Brush,
                    center As PointF,
                    width As Integer,
@@ -362,6 +366,10 @@ Public Structure Body
 
         AlineCenterMiddle = New StringFormat With {.Alignment = StringAlignment.Center,
                                                    .LineAlignment = StringAlignment.Center}
+
+        TimeToNextRotation = TimeSpan.FromMilliseconds(1)
+
+        LastRotationTime = Now
 
         Me.Velocity = velocity
 
@@ -415,6 +423,51 @@ Public Structure Body
         VelocityVector.Y = Sin(AngleInRadians) * Me.Velocity
 
         ShowKeyboardHints = True
+
+    End Sub
+
+
+    Public Sub RotateClockwise()
+
+        Dim ElapsedTime As TimeSpan = Now - LastRotationTime
+
+        If ElapsedTime > TimeToNextRotation Then
+
+            If AngleInDegrees < 360 Then
+
+                AngleInDegrees += 1 ' Rotate clockwise
+
+            Else
+
+                AngleInDegrees = 0
+
+            End If
+
+            LastRotationTime = Now
+
+        End If
+
+    End Sub
+
+    Public Sub RotateCounterClockwise()
+
+        Dim ElapsedTime As TimeSpan = Now - LastRotationTime
+
+        If ElapsedTime > TimeToNextRotation Then
+
+            If AngleInDegrees > 0 Then
+
+                AngleInDegrees -= 1 ' Rotate counterclockwise
+
+            Else
+
+                AngleInDegrees = 360
+
+            End If
+
+            LastRotationTime = Now
+
+        End If
 
     End Sub
 
@@ -1749,6 +1802,8 @@ Public Class Form1
 
         Player.SetVolume("emergencystop", 400)
 
+        MyBody.TimeToNextRotation = TimeSpan.FromMilliseconds(10)
+
     End Sub
 
     Private Sub InitializeForm()
@@ -1910,29 +1965,36 @@ Public Class Form1
 
         If ADown Then
 
-            If MyBody.AngleInDegrees > 0 Then
 
-                MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
+            MyBody.RotateCounterClockwise()
 
-            Else
+            'If MyBody.AngleInDegrees > 0 Then
 
-                MyBody.AngleInDegrees = 360
+            '    MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
 
-            End If
+            'Else
+
+            '    MyBody.AngleInDegrees = 360
+
+            'End If
 
         End If
 
         If DDown Then
 
-            If MyBody.AngleInDegrees < 360 Then
+            MyBody.RotateClockwise()
 
-                MyBody.AngleInDegrees += 1 ' Rotate clockwise
 
-            Else
 
-                MyBody.AngleInDegrees = 0
+            'If MyBody.AngleInDegrees < 360 Then
 
-            End If
+            '    MyBody.AngleInDegrees += 1 ' Rotate clockwise
+
+            'Else
+
+            '    MyBody.AngleInDegrees = 0
+
+            'End If
 
         End If
 
