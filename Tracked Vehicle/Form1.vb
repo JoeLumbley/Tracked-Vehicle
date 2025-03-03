@@ -1721,11 +1721,9 @@ Public Structure XboxControllers
 
 End Structure
 
-
 Public Class Form1
 
     Private Controllers As XboxControllers
-
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
@@ -1778,7 +1776,6 @@ Public Class Form1
         InitializeTimer()
 
         Controllers.Initialize()
-
 
         CreateSoundFiles()
 
@@ -1841,40 +1838,13 @@ Public Class Form1
 
             MyBody.RotateCounterClockwise()
 
-
-            'If MyBody.AngleInDegrees > 0 Then
-
-            '    MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
-
-            'Else
-
-            '    MyBody.AngleInDegrees = 360
-
-            'End If
-
         End If
 
         If Controllers.LeftThumbstickRight(0) Then
 
             MyBody.RotateClockwise()
 
-
-            'If MyBody.AngleInDegrees < 360 Then
-
-            '    MyBody.AngleInDegrees += 1 ' Rotate clockwise
-
-            'Else
-
-            '    MyBody.AngleInDegrees = 0
-
-            'End If
-
         End If
-
-
-
-
-
 
         If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
 
@@ -1906,13 +1876,9 @@ Public Class Form1
 
         End If
 
-
-
-
         If Controllers.B(0) Then
 
             EmergencyStop()
-
 
             If MyBody.Velocity <> 0 Then
 
@@ -1920,13 +1886,11 @@ Public Class Form1
 
                     Player.LoopSound("emergencystop")
 
-
-
                 End If
 
                 Controllers.TimeToVibe = 50
-                Controllers.VibrateRight(0, 64000)
 
+                Controllers.VibrateRight(0, 64000)
 
             Else
 
@@ -1938,26 +1902,15 @@ Public Class Form1
 
             End If
 
-        Else
+        ElseIf Not EDown Then
 
-            'If Player.IsPlaying("emergencystop") Then
+            If Player.IsPlaying("emergencystop") Then
 
-            '    Player.PauseSound("emergencystop")
+                Player.PauseSound("emergencystop")
 
-            'End If
+            End If
 
         End If
-
-
-
-
-
-
-
-
-
-
-
 
         myArrow.Center = MyBody.Center
 
@@ -2010,18 +1963,7 @@ Public Class Form1
 
         If ADown Then
 
-
             MyBody.RotateCounterClockwise()
-
-            'If MyBody.AngleInDegrees > 0 Then
-
-            '    MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
-
-            'Else
-
-            '    MyBody.AngleInDegrees = 360
-
-            'End If
 
         End If
 
@@ -2029,25 +1971,7 @@ Public Class Form1
 
             MyBody.RotateClockwise()
 
-
-
-            'If MyBody.AngleInDegrees < 360 Then
-
-            '    MyBody.AngleInDegrees += 1 ' Rotate clockwise
-
-            'Else
-
-            '    MyBody.AngleInDegrees = 0
-
-            'End If
-
         End If
-
-
-
-
-
-
 
         If WDown Then
 
@@ -2079,25 +2003,9 @@ Public Class Form1
 
         End If
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         If EDown Then
 
             EmergencyStop()
-
-
-
 
             If MyBody.Velocity <> 0 Then
 
@@ -2117,20 +2025,15 @@ Public Class Form1
 
             End If
 
-        Else
+        ElseIf Not Controllers.B(0) Then
 
-            'If Player.IsPlaying("emergencystop") Then
+            If Player.IsPlaying("emergencystop") Then
 
-            '    Player.PauseSound("emergencystop")
+                Player.PauseSound("emergencystop")
 
-            'End If
+            End If
 
         End If
-
-
-
-
-
 
         If F1Down Then
 
