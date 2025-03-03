@@ -1729,7 +1729,7 @@ Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-    Private MyBody As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 400, 30)
+    Private MyBody As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 200, 30)
 
     Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, MyBody.MaxVelocity, 30)
 
@@ -1800,9 +1800,9 @@ Public Class Form1
 
         Player.AddSound("emergencystop", FilePath)
 
-        Player.SetVolume("emergencystop", 400)
+        Player.SetVolume("emergencystop", 1000)
 
-        MyBody.TimeToNextRotation = TimeSpan.FromMilliseconds(10)
+        MyBody.TimeToNextRotation = TimeSpan.FromMilliseconds(20)
 
     End Sub
 
@@ -1839,29 +1839,35 @@ Public Class Form1
 
         If Controllers.LeftThumbstickLeft(0) Then
 
-            If MyBody.AngleInDegrees > 0 Then
+            MyBody.RotateCounterClockwise()
 
-                MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
 
-            Else
+            'If MyBody.AngleInDegrees > 0 Then
 
-                MyBody.AngleInDegrees = 360
+            '    MyBody.AngleInDegrees -= 1 ' Rotate counterclockwise
 
-            End If
+            'Else
+
+            '    MyBody.AngleInDegrees = 360
+
+            'End If
 
         End If
 
         If Controllers.LeftThumbstickRight(0) Then
 
-            If MyBody.AngleInDegrees < 360 Then
+            MyBody.RotateClockwise()
 
-                MyBody.AngleInDegrees += 1 ' Rotate clockwise
 
-            Else
+            'If MyBody.AngleInDegrees < 360 Then
 
-                MyBody.AngleInDegrees = 0
+            '    MyBody.AngleInDegrees += 1 ' Rotate clockwise
 
-            End If
+            'Else
+
+            '    MyBody.AngleInDegrees = 0
+
+            'End If
 
         End If
 
@@ -1870,7 +1876,7 @@ Public Class Form1
 
 
 
-        If Controllers.LeftThumbstickUp(0) Then
+        If Controllers.A(0) Then
 
             If MyBody.Velocity < MyBody.MaxVelocity Then
 
@@ -1882,7 +1888,7 @@ Public Class Form1
 
             End If
 
-        ElseIf Controllers.LeftThumbstickDown(0) Then
+        ElseIf Controllers.Y(0) Then
 
             If MyBody.Velocity > -MyBody.MaxVelocity Then
 
@@ -1902,6 +1908,38 @@ Public Class Form1
 
 
 
+
+        If Controllers.B(0) Then
+
+            EmergencyStop()
+
+            If MyBody.Velocity <> 0 Then
+
+                If Not Player.IsPlaying("emergencystop") Then
+
+                    Player.LoopSound("emergencystop")
+
+                End If
+
+            Else
+
+                If Player.IsPlaying("emergencystop") Then
+
+                    Player.PauseSound("emergencystop")
+
+                End If
+
+            End If
+
+        Else
+
+            'If Player.IsPlaying("emergencystop") Then
+
+            '    Player.PauseSound("emergencystop")
+
+            'End If
+
+        End If
 
 
 
@@ -2051,6 +2089,9 @@ Public Class Form1
 
             EmergencyStop()
 
+
+
+
             If MyBody.Velocity <> 0 Then
 
                 If Not Player.IsPlaying("emergencystop") Then
@@ -2071,13 +2112,18 @@ Public Class Form1
 
         Else
 
-            If Player.IsPlaying("emergencystop") Then
+            'If Player.IsPlaying("emergencystop") Then
 
-                Player.PauseSound("emergencystop")
+            '    Player.PauseSound("emergencystop")
 
-            End If
+            'End If
 
         End If
+
+
+
+
+
 
         If F1Down Then
 
