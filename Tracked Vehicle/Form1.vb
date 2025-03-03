@@ -1876,7 +1876,7 @@ Public Class Form1
 
 
 
-        If Controllers.A(0) Then
+        If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
 
             If MyBody.Velocity < MyBody.MaxVelocity Then
 
@@ -1913,13 +1913,20 @@ Public Class Form1
 
             EmergencyStop()
 
+
             If MyBody.Velocity <> 0 Then
 
                 If Not Player.IsPlaying("emergencystop") Then
 
                     Player.LoopSound("emergencystop")
 
+
+
                 End If
+
+                Controllers.TimeToVibe = 50
+                Controllers.VibrateRight(0, 64000)
+
 
             Else
 
