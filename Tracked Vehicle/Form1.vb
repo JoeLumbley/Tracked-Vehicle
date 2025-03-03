@@ -1884,7 +1884,7 @@ Public Class Form1
 
                 If Not Player.IsPlaying("emergencystop") Then
 
-                    Player.LoopSound("emergencystop")
+                    Player.PlaySound("emergencystop")
 
                 End If
 
@@ -2011,7 +2011,7 @@ Public Class Form1
 
                 If Not Player.IsPlaying("emergencystop") Then
 
-                    Player.LoopSound("emergencystop")
+                    Player.PlaySound("emergencystop")
 
                 End If
 
