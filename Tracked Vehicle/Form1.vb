@@ -2,6 +2,7 @@
 Imports System.Math
 Imports System.Runtime.InteropServices
 Imports System.Text
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Tab
 
 Public Structure DeltaTimeStructure
 
@@ -426,7 +427,6 @@ Public Structure Body
 
     End Sub
 
-
     Public Sub RotateClockwise()
 
         Dim ElapsedTime As TimeSpan = Now - LastRotationTime
@@ -466,10 +466,48 @@ Public Structure Body
             End If
 
             LastRotationTime = Now
+        End If
+    End Sub
+
+    Public Sub EmergencyStop(deltaTime As TimeSpan)
+
+        If Velocity < 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = Velocity + (Acceleration.Y * 8 * deltaTime.TotalSeconds)
+
+            If newVelocity > 0 Then
+
+                Velocity = 0
+
+            Else
+
+                Velocity = newVelocity
+
+            End If
+
+        End If
+
+        If Velocity > 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = Velocity + (-Acceleration.Y * 8 * deltaTime.TotalSeconds)
+
+            If newVelocity < 0 Then
+
+                Velocity = 0
+
+            Else
+
+                Velocity = newVelocity
+
+            End If
 
         End If
 
     End Sub
+
+
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
 
@@ -1878,7 +1916,7 @@ Public Class Form1
 
         If Controllers.B(0) Then
 
-            EmergencyStop()
+            MyBody.EmergencyStop(DeltaTime.ElapsedTime)
 
             If MyBody.Velocity <> 0 Then
 
@@ -1890,7 +1928,7 @@ Public Class Form1
 
                 Controllers.TimeToVibe = 50
 
-                Controllers.VibrateRight(0, 64000)
+                Controllers.VibrateRight(0, 32000)
 
             Else
 
@@ -2005,7 +2043,8 @@ Public Class Form1
 
         If EDown Then
 
-            EmergencyStop()
+            'EmergencyStop()
+            MyBody.EmergencyStop(DeltaTime.ElapsedTime)
 
             If MyBody.Velocity <> 0 Then
 
@@ -2212,43 +2251,47 @@ Public Class Form1
 
     End Sub
 
-    Private Sub EmergencyStop()
+    'Private Sub EmergencyStop()
 
-        If MyBody.Velocity < 0 Then
+    '    If MyBody.Velocity < 0 Then
 
-            ' Calculate potential new velocity
-            Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+    '        ' Calculate potential new velocity
+    '        Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
 
-            If newVelocity > 0 Then
+    '        If newVelocity > 0 Then
 
-                MyBody.Velocity = 0
+    '            MyBody.Velocity = 0
 
-            Else
+    '        Else
 
-                MyBody.Velocity = newVelocity
+    '            MyBody.Velocity = newVelocity
 
-            End If
+    '        End If
 
-        End If
+    '    End If
 
-        If MyBody.Velocity > 0 Then
+    '    If MyBody.Velocity > 0 Then
 
-            ' Calculate potential new velocity
-            Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+    '        ' Calculate potential new velocity
+    '        Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
 
-            If newVelocity < 0 Then
+    '        If newVelocity < 0 Then
 
-                MyBody.Velocity = 0
+    '            MyBody.Velocity = 0
 
-            Else
+    '        Else
 
-                MyBody.Velocity = newVelocity
+    '            MyBody.Velocity = newVelocity
 
-            End If
+    '        End If
 
-        End If
+    '    End If
 
-    End Sub
+    'End Sub
+
+
+
+
 
 End Class
 
