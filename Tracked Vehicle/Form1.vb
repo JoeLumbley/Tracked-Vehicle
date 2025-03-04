@@ -1802,9 +1802,9 @@ Public Class Form1
 
     Private ClientCenter As Point = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-    Private MyBody As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 200, 30)
+    Private Body As New Body(Brushes.Gray, New PointF(500, 500), 128, 64, 0, 0, 200, 30)
 
-    Dim myArrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, MyBody.MaxVelocity, 30)
+    Dim Arrow As New ArrowVector(New Pen(Color.Black, 10), New PointF(640, 360), 0, 60, 70, 10, 15, 0, Body.MaxVelocity, 30)
 
     Private DeltaTime As New DeltaTimeStructure(Now, Now, TimeSpan.Zero)
 
@@ -1852,6 +1852,14 @@ Public Class Form1
 
         Controllers.Initialize()
 
+        InitializeSounds()
+
+        Body.TimeToNextRotation = TimeSpan.FromMilliseconds(20)
+
+    End Sub
+
+    Private Sub InitializeSounds()
+
         CreateSoundFiles()
 
         Dim FilePath As String = Path.Combine(Application.StartupPath, "idle.mp3")
@@ -1873,8 +1881,6 @@ Public Class Form1
         Player.AddSound("emergencystop", FilePath)
 
         Player.SetVolume("emergencystop", 1000)
-
-        MyBody.TimeToNextRotation = TimeSpan.FromMilliseconds(20)
 
     End Sub
 
@@ -1909,53 +1915,109 @@ Public Class Form1
 
         HandleKeyPresses()
 
-        If Controllers.LeftThumbstickLeft(0) Then
+        HandleControllerInput()
 
-            MyBody.RotateCounterClockwise()
+        Body.CheckWallBounce(Body.Body, ClientSize.Width, ClientSize.Height)
 
-        End If
+        Body.Update(DeltaTime.ElapsedTime)
 
-        If Controllers.LeftThumbstickRight(0) Then
+        Arrow.Center = Body.Center
 
-            MyBody.RotateClockwise()
+        Arrow.AngleInDegrees = Body.AngleInDegrees
 
-        End If
+        Arrow.Velocity = Body.Velocity
 
-        If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
+        Arrow.Update(DeltaTime.ElapsedTime)
 
-            If MyBody.Velocity < MyBody.MaxVelocity Then
+        HandleAudioPlayback()
 
-                MyBody.Velocity += 1
+        Invalidate()
 
-            Else
+    End Sub
 
-                MyBody.Velocity = MyBody.MaxVelocity
+    Private Sub HandleAudioPlayback()
+
+        If Body.Velocity <> 0 Then
+
+            If Not Player.IsPlaying("running") Then
+
+                Player.LoopSound("running")
 
             End If
 
-        ElseIf Controllers.Y(0) Then
+            If Player.IsPlaying("idle") Then
 
-            If MyBody.Velocity > -MyBody.MaxVelocity Then
-
-                MyBody.Velocity += -1
-
-            Else
-
-                MyBody.Velocity = -MyBody.MaxVelocity
+                Player.PauseSound("idle")
 
             End If
 
         Else
 
-            MyBody.Decelerate(DeltaTime.ElapsedTime)
+            If Not Player.IsPlaying("idle") Then
+
+                Player.LoopSound("idle")
+
+            End If
+
+            If Player.IsPlaying("running") Then
+
+                Player.PauseSound("running")
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub HandleControllerInput()
+
+        If Controllers.LeftThumbstickLeft(0) Then
+
+            Body.RotateCounterClockwise()
+
+        End If
+
+        If Controllers.LeftThumbstickRight(0) Then
+
+            Body.RotateClockwise()
+
+        End If
+
+        If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
+
+            If Body.Velocity < Body.MaxVelocity Then
+
+                Body.Velocity += 1
+
+            Else
+
+                Body.Velocity = Body.MaxVelocity
+
+            End If
+
+        ElseIf Controllers.Y(0) Then
+
+            If Body.Velocity > -Body.MaxVelocity Then
+
+                Body.Velocity += -1
+
+            Else
+
+                Body.Velocity = -Body.MaxVelocity
+
+            End If
+
+        Else
+
+            Body.Decelerate(DeltaTime.ElapsedTime)
 
         End If
 
         If Controllers.B(0) Then
 
-            MyBody.EmergencyStop(DeltaTime.ElapsedTime)
+            Body.EmergencyStop(DeltaTime.ElapsedTime)
 
-            If MyBody.Velocity <> 0 Then
+            If Body.Velocity <> 0 Then
 
                 If Not Player.IsPlaying("emergencystop") Then
 
@@ -1987,50 +2049,6 @@ Public Class Form1
 
         End If
 
-        myArrow.Center = MyBody.Center
-
-        myArrow.AngleInDegrees = MyBody.AngleInDegrees
-
-        myArrow.Velocity = MyBody.Velocity
-
-        myArrow.Update(DeltaTime.ElapsedTime)
-
-        MyBody.Update(DeltaTime.ElapsedTime)
-
-        MyBody.CheckWallBounce(MyBody.Body, ClientSize.Width, ClientSize.Height)
-
-        If MyBody.Velocity <> 0 Then
-
-            If Not Player.IsPlaying("running") Then
-
-                Player.LoopSound("running")
-
-            End If
-
-            If Player.IsPlaying("idle") Then
-
-                Player.PauseSound("idle")
-
-            End If
-
-        Else
-
-            If Not Player.IsPlaying("idle") Then
-
-                Player.LoopSound("idle")
-
-            End If
-
-            If Player.IsPlaying("running") Then
-
-                Player.PauseSound("running")
-
-            End If
-
-        End If
-
-        Invalidate()
-
     End Sub
 
     Private Sub HandleKeyPresses()
@@ -2038,52 +2056,51 @@ Public Class Form1
 
         If ADown Then
 
-            MyBody.RotateCounterClockwise()
+            Body.RotateCounterClockwise()
 
         End If
 
         If DDown Then
 
-            MyBody.RotateClockwise()
+            Body.RotateClockwise()
 
         End If
 
         If WDown Then
 
-            If MyBody.Velocity < MyBody.MaxVelocity Then
+            If Body.Velocity < Body.MaxVelocity Then
 
-                MyBody.Velocity += 1
+                Body.Velocity += 1
 
             Else
 
-                MyBody.Velocity = MyBody.MaxVelocity
+                Body.Velocity = Body.MaxVelocity
 
             End If
 
         ElseIf SDown Then
 
-            If MyBody.Velocity > -MyBody.MaxVelocity Then
+            If Body.Velocity > -Body.MaxVelocity Then
 
-                MyBody.Velocity += -1
+                Body.Velocity += -1
 
             Else
 
-                MyBody.Velocity = -MyBody.MaxVelocity
+                Body.Velocity = -Body.MaxVelocity
 
             End If
 
         Else
 
-            'Decelerate()
-            MyBody.Decelerate(DeltaTime.ElapsedTime)
+            Body.Decelerate(DeltaTime.ElapsedTime)
 
         End If
 
         If EDown Then
 
-            MyBody.EmergencyStop(DeltaTime.ElapsedTime)
+            Body.EmergencyStop(DeltaTime.ElapsedTime)
 
-            If MyBody.Velocity <> 0 Then
+            If Body.Velocity <> 0 Then
 
                 If Not Player.IsPlaying("emergencystop") Then
 
@@ -2113,11 +2130,11 @@ Public Class Form1
 
         If F1Down Then
 
-            If MyBody.ShowKeyboardHints Then
+            If Body.ShowKeyboardHints Then
 
                 If Not F1DownHandled Then
 
-                    MyBody.ShowKeyboardHints = False
+                    Body.ShowKeyboardHints = False
 
                     F1DownHandled = True
 
@@ -2127,7 +2144,7 @@ Public Class Form1
 
                 If Not F1DownHandled Then
 
-                    MyBody.ShowKeyboardHints = True
+                    Body.ShowKeyboardHints = True
 
                     F1DownHandled = True
 
@@ -2150,14 +2167,14 @@ Public Class Form1
 
         e.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
 
-        If MyBody.ShowKeyboardHints Then
+        If Body.ShowKeyboardHints Then
             e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
 
         End If
 
-        MyBody.Draw(e.Graphics)
+        Body.Draw(e.Graphics)
 
-        myArrow.Draw(e.Graphics)
+        Arrow.Draw(e.Graphics)
 
     End Sub
 
@@ -2206,7 +2223,7 @@ Public Class Form1
 
         ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-        MyBody.Center = ClientCenter
+        Body.Center = ClientCenter
 
     End Sub
 
