@@ -507,6 +507,43 @@ Public Structure Body
 
     End Sub
 
+    Public Sub Decelerate(deltaTime As TimeSpan)
+
+        If Velocity < 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = Velocity + (Acceleration.Y * deltaTime.TotalSeconds)
+
+            If newVelocity > 0 Then
+
+                Velocity = 0
+
+            Else
+
+                Velocity = newVelocity
+
+            End If
+
+        End If
+
+        If Velocity > 0 Then
+
+            ' Calculate potential new velocity
+            Dim newVelocity As Double = Velocity + (-Acceleration.Y * deltaTime.TotalSeconds)
+
+            If newVelocity < 0 Then
+
+                Velocity = 0
+
+            Else
+
+                Velocity = newVelocity
+
+            End If
+
+        End If
+
+    End Sub
 
 
     Public Sub Update(ByVal deltaTime As TimeSpan)
@@ -1910,7 +1947,7 @@ Public Class Form1
 
         Else
 
-            Decelerate()
+            MyBody.Decelerate(DeltaTime.ElapsedTime)
 
         End If
 
@@ -2037,13 +2074,13 @@ Public Class Form1
 
         Else
 
-            Decelerate()
+            'Decelerate()
+            MyBody.Decelerate(DeltaTime.ElapsedTime)
 
         End If
 
         If EDown Then
 
-            'EmergencyStop()
             MyBody.EmergencyStop(DeltaTime.ElapsedTime)
 
             If MyBody.Velocity <> 0 Then
@@ -2213,50 +2250,12 @@ Public Class Form1
 
     End Sub
 
-    Private Sub Decelerate()
-
-        If MyBody.Velocity < 0 Then
-
-            ' Calculate potential new velocity
-            Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
-
-            If newVelocity > 0 Then
-
-                MyBody.Velocity = 0
-
-            Else
-
-                MyBody.Velocity = newVelocity
-
-            End If
-
-        End If
-
-        If MyBody.Velocity > 0 Then
-
-            ' Calculate potential new velocity
-            Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
-
-            If newVelocity < 0 Then
-
-                MyBody.Velocity = 0
-
-            Else
-
-                MyBody.Velocity = newVelocity
-
-            End If
-
-        End If
-
-    End Sub
-
-    'Private Sub EmergencyStop()
+    'Private Sub Decelerate()
 
     '    If MyBody.Velocity < 0 Then
 
     '        ' Calculate potential new velocity
-    '        Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+    '        Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
 
     '        If newVelocity > 0 Then
 
@@ -2273,7 +2272,7 @@ Public Class Form1
     '    If MyBody.Velocity > 0 Then
 
     '        ' Calculate potential new velocity
-    '        Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * 8 * DeltaTime.ElapsedTime.TotalSeconds)
+    '        Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
 
     '        If newVelocity < 0 Then
 
@@ -2288,10 +2287,6 @@ Public Class Form1
     '    End If
 
     'End Sub
-
-
-
-
 
 End Class
 
