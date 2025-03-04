@@ -1842,7 +1842,6 @@ Public Class Form1
 
     Private Player As AudioPlayer
 
-    ' Constructor for the form.
     Public Sub New()
         InitializeComponent()
 
@@ -1855,55 +1854,6 @@ Public Class Form1
         InitializeSounds()
 
         Body.TimeToNextRotation = TimeSpan.FromMilliseconds(20)
-
-    End Sub
-
-    Private Sub InitializeSounds()
-
-        CreateSoundFiles()
-
-        Dim FilePath As String = Path.Combine(Application.StartupPath, "idle.mp3")
-
-        Player.AddSound("idle", FilePath)
-
-        Player.SetVolume("idle", 300)
-
-        Player.LoopSound("idle")
-
-        FilePath = Path.Combine(Application.StartupPath, "running.mp3")
-
-        Player.AddSound("running", FilePath)
-
-        Player.SetVolume("running", 400)
-
-        FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
-
-        Player.AddSound("emergencystop", FilePath)
-
-        Player.SetVolume("emergencystop", 1000)
-
-    End Sub
-
-    Private Sub InitializeForm()
-
-        CenterToScreen()
-
-        SetStyle(ControlStyles.UserPaint, True)
-
-        ' Enable double buffering to reduce flickering
-        SetStyle(ControlStyles.OptimizedDoubleBuffer Or ControlStyles.AllPaintingInWmPaint, True)
-
-        Text = "Tracked Vehicle - Code with Joe"
-
-        WindowState = FormWindowState.Maximized
-
-    End Sub
-
-    Private Sub InitializeTimer()
-
-        Timer1.Interval = 15
-
-        Timer1.Start()
 
     End Sub
 
@@ -1935,119 +1885,80 @@ Public Class Form1
 
     End Sub
 
-    Private Sub HandleAudioPlayback()
+    Protected Overrides Sub OnPaint(e As PaintEventArgs)
+        MyBase.OnPaint(e)
 
-        If Body.Velocity <> 0 Then
+        e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
 
-            If Not Player.IsPlaying("running") Then
+        e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
 
-                Player.LoopSound("running")
+        e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-            End If
+        e.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
 
-            If Player.IsPlaying("idle") Then
-
-                Player.PauseSound("idle")
-
-            End If
-
-        Else
-
-            If Not Player.IsPlaying("idle") Then
-
-                Player.LoopSound("idle")
-
-            End If
-
-            If Player.IsPlaying("running") Then
-
-                Player.PauseSound("running")
-
-            End If
+        If Body.ShowKeyboardHints Then
+            e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
 
         End If
+
+        Body.Draw(e.Graphics)
+
+        Arrow.Draw(e.Graphics)
 
     End Sub
 
-    Private Sub HandleControllerInput()
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
 
-        If Controllers.LeftThumbstickLeft(0) Then
+        Select Case e.KeyCode
+            Case Keys.A
+                ADown = True
+            Case Keys.D
+                DDown = True
+            Case Keys.W
+                WDown = True
+            Case Keys.S
+                SDown = True
+            Case Keys.E
+                EDown = True
+            Case Keys.F1
+                F1Down = True
+        End Select
 
-            Body.RotateCounterClockwise()
+    End Sub
 
-        End If
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
+        MyBase.OnKeyUp(e)
 
-        If Controllers.LeftThumbstickRight(0) Then
+        Select Case e.KeyCode
+            Case Keys.A
+                ADown = False
+            Case Keys.D
+                DDown = False
+            Case Keys.W
+                WDown = False
+            Case Keys.S
+                SDown = False
+            Case Keys.E
+                EDown = False
+            Case Keys.F1
+                F1Down = False
+                F1DownHandled = False
+        End Select
 
-            Body.RotateClockwise()
+    End Sub
 
-        End If
+    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
 
-        If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
+        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-            If Body.Velocity < Body.MaxVelocity Then
+        Body.Center = ClientCenter
 
-                Body.Velocity += 1
+    End Sub
 
-            Else
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
-                Body.Velocity = Body.MaxVelocity
-
-            End If
-
-        ElseIf Controllers.Y(0) Then
-
-            If Body.Velocity > -Body.MaxVelocity Then
-
-                Body.Velocity += -1
-
-            Else
-
-                Body.Velocity = -Body.MaxVelocity
-
-            End If
-
-        Else
-
-            Body.Decelerate(DeltaTime.ElapsedTime)
-
-        End If
-
-        If Controllers.B(0) Then
-
-            Body.EmergencyStop(DeltaTime.ElapsedTime)
-
-            If Body.Velocity <> 0 Then
-
-                If Not Player.IsPlaying("emergencystop") Then
-
-                    Player.PlaySound("emergencystop")
-
-                End If
-
-                Controllers.TimeToVibe = 50
-
-                Controllers.VibrateRight(0, 32000)
-
-            Else
-
-                If Player.IsPlaying("emergencystop") Then
-
-                    Player.PauseSound("emergencystop")
-
-                End If
-
-            End If
-
-        ElseIf Not EDown Then
-
-            If Player.IsPlaying("emergencystop") Then
-
-                Player.PauseSound("emergencystop")
-
-            End If
-
-        End If
+        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
     End Sub
 
@@ -2156,80 +2067,171 @@ Public Class Form1
 
     End Sub
 
-    Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        MyBase.OnPaint(e)
+    Private Sub HandleControllerInput()
 
-        e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
+        If Controllers.LeftThumbstickLeft(0) Then
 
-        e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
-
-        e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-
-        e.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
-
-        If Body.ShowKeyboardHints Then
-            e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+            Body.RotateCounterClockwise()
 
         End If
 
-        Body.Draw(e.Graphics)
+        If Controllers.LeftThumbstickRight(0) Then
 
-        Arrow.Draw(e.Graphics)
+            Body.RotateClockwise()
+
+        End If
+
+        If Controllers.A(0) OrElse Controllers.LeftStick(0) Then
+
+            If Body.Velocity < Body.MaxVelocity Then
+
+                Body.Velocity += 1
+
+            Else
+
+                Body.Velocity = Body.MaxVelocity
+
+            End If
+
+        ElseIf Controllers.Y(0) Then
+
+            If Body.Velocity > -Body.MaxVelocity Then
+
+                Body.Velocity += -1
+
+            Else
+
+                Body.Velocity = -Body.MaxVelocity
+
+            End If
+
+        Else
+
+            Body.Decelerate(DeltaTime.ElapsedTime)
+
+        End If
+
+        If Controllers.B(0) Then
+
+            Body.EmergencyStop(DeltaTime.ElapsedTime)
+
+            If Body.Velocity <> 0 Then
+
+                If Not Player.IsPlaying("emergencystop") Then
+
+                    Player.PlaySound("emergencystop")
+
+                End If
+
+                Controllers.TimeToVibe = 50
+
+                Controllers.VibrateRight(0, 32000)
+
+            Else
+
+                If Player.IsPlaying("emergencystop") Then
+
+                    Player.PauseSound("emergencystop")
+
+                End If
+
+            End If
+
+        ElseIf Not EDown Then
+
+            If Player.IsPlaying("emergencystop") Then
+
+                Player.PauseSound("emergencystop")
+
+            End If
+
+        End If
 
     End Sub
 
-    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        MyBase.OnKeyDown(e)
 
-        Select Case e.KeyCode
-            Case Keys.A
-                ADown = True
-            Case Keys.D
-                DDown = True
-            Case Keys.W
-                WDown = True
-            Case Keys.S
-                SDown = True
-            Case Keys.E
-                EDown = True
-            Case Keys.F1
-                F1Down = True
-        End Select
+    Private Sub HandleAudioPlayback()
 
-    End Sub
+        If Body.Velocity <> 0 Then
 
-    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
-        MyBase.OnKeyUp(e)
+            If Not Player.IsPlaying("running") Then
 
-        Select Case e.KeyCode
-            Case Keys.A
-                ADown = False
-            Case Keys.D
-                DDown = False
-            Case Keys.W
-                WDown = False
-            Case Keys.S
-                SDown = False
-            Case Keys.E
-                EDown = False
-            Case Keys.F1
-                F1Down = False
-                F1DownHandled = False
-        End Select
+                Player.LoopSound("running")
+
+            End If
+
+            If Player.IsPlaying("idle") Then
+
+                Player.PauseSound("idle")
+
+            End If
+
+        Else
+
+            If Not Player.IsPlaying("idle") Then
+
+                Player.LoopSound("idle")
+
+            End If
+
+            If Player.IsPlaying("running") Then
+
+                Player.PauseSound("running")
+
+            End If
+
+        End If
 
     End Sub
 
-    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
 
-        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
 
-        Body.Center = ClientCenter
+    Private Sub InitializeForm()
+
+        CenterToScreen()
+
+        SetStyle(ControlStyles.UserPaint, True)
+
+        ' Enable double buffering to reduce flickering
+        SetStyle(ControlStyles.OptimizedDoubleBuffer Or ControlStyles.AllPaintingInWmPaint, True)
+
+        Text = "Tracked Vehicle - Code with Joe"
+
+        WindowState = FormWindowState.Maximized
 
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Private Sub InitializeTimer()
 
-        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+        Timer1.Interval = 15
+
+        Timer1.Start()
+
+    End Sub
+
+    Private Sub InitializeSounds()
+
+        CreateSoundFiles()
+
+        Dim FilePath As String = Path.Combine(Application.StartupPath, "idle.mp3")
+
+        Player.AddSound("idle", FilePath)
+
+        Player.SetVolume("idle", 300)
+
+        Player.LoopSound("idle")
+
+        FilePath = Path.Combine(Application.StartupPath, "running.mp3")
+
+        Player.AddSound("running", FilePath)
+
+        Player.SetVolume("running", 400)
+
+        FilePath = Path.Combine(Application.StartupPath, "emergencystop.mp3")
+
+        Player.AddSound("emergencystop", FilePath)
+
+        Player.SetVolume("emergencystop", 1000)
 
     End Sub
 
@@ -2266,44 +2268,6 @@ Public Class Form1
         End Try
 
     End Sub
-
-    'Private Sub Decelerate()
-
-    '    If MyBody.Velocity < 0 Then
-
-    '        ' Calculate potential new velocity
-    '        Dim newVelocity As Double = MyBody.Velocity + (MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
-
-    '        If newVelocity > 0 Then
-
-    '            MyBody.Velocity = 0
-
-    '        Else
-
-    '            MyBody.Velocity = newVelocity
-
-    '        End If
-
-    '    End If
-
-    '    If MyBody.Velocity > 0 Then
-
-    '        ' Calculate potential new velocity
-    '        Dim newVelocity As Double = MyBody.Velocity + (-MyBody.Acceleration.Y * DeltaTime.ElapsedTime.TotalSeconds)
-
-    '        If newVelocity < 0 Then
-
-    '            MyBody.Velocity = 0
-
-    '        Else
-
-    '            MyBody.Velocity = newVelocity
-
-    '        End If
-
-    '    End If
-
-    'End Sub
 
 End Class
 
