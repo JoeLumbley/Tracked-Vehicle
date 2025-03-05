@@ -2013,19 +2013,6 @@ Public Class Form1
 
         Body.Update(DeltaTime.ElapsedTime)
 
-
-        'If Body.ShowKeyboardHints = True Then
-
-        '    HintsText = KeyboardHintsText
-
-        'Else
-
-        '    HintsText = ControllerHintsText
-
-        'End If
-
-
-
         Arrow.Center = Body.Center
 
         Arrow.AngleInDegrees = Body.AngleInDegrees
@@ -2039,7 +2026,6 @@ Public Class Form1
         Invalidate()
 
     End Sub
-
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
