@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.Drawing.Drawing2D
+Imports System.IO
 Imports System.Math
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -1796,7 +1797,105 @@ Public Structure XboxControllers
 
 End Structure
 
+
+
+
+Public Structure BufferManager
+
+    Private Context As BufferedGraphicsContext
+
+    Public Buffered As BufferedGraphics
+
+    Private ReadOnly MinimumBufferSize As Size '(1280, 720)
+
+    Private BackgroundColor As Color '= Color.Black
+
+    Public Sub New(form As Form, backgroundColor As Color)
+
+        Me.BackgroundColor = backgroundColor
+
+        MinimumBufferSize = New Size(1280, 720)
+
+        InitializeBuffer(form)
+
+    End Sub
+
+    Private Sub InitializeBuffer(form As Form)
+
+        Context = BufferedGraphicsManager.Current
+
+        If Screen.PrimaryScreen IsNot Nothing Then
+
+            Context.MaximumBuffer = Screen.PrimaryScreen.WorkingArea.Size
+
+        Else
+
+            Context.MaximumBuffer = MinimumBufferSize
+
+            Debug.Print($"Primary screen not detected.")
+
+        End If
+
+        AllocateBuffer(form)
+
+    End Sub
+
+    Public Sub AllocateBuffer(form As Form)
+
+        If Buffered Is Nothing Then
+
+            Buffered = Context.Allocate(form.CreateGraphics(), form.ClientRectangle)
+
+            Buffered.Graphics.CompositingMode =
+                              CompositingMode.SourceOver
+
+            Buffered.Graphics.CompositingQuality =
+                              CompositingQuality.HighQuality
+
+            Buffered.Graphics.SmoothingMode =
+                              SmoothingMode.HighQuality
+
+            Buffered.Graphics.InterpolationMode =
+                              InterpolationMode.Bicubic
+
+            Buffered.Graphics.PixelOffsetMode =
+                              PixelOffsetMode.HighQuality
+
+            Buffered.Graphics.TextRenderingHint =
+                         Text.TextRenderingHint.AntiAliasGridFit
+
+            EraseFrame()
+
+        End If
+
+    End Sub
+
+    Public Sub EraseFrame()
+
+        Buffered?.Graphics.Clear(BackgroundColor)
+
+    End Sub
+
+    Public Sub DisposeBuffer()
+
+        If Buffered IsNot Nothing Then
+
+            Buffered.Dispose()
+
+            Buffered = Nothing ' Set to Nothing to avoid using a disposed object
+
+            ' The buffer will be reallocated in OnPaint
+
+        End If
+
+    End Sub
+
+End Structure
+
 Public Class Form1
+
+    Private OffScreen As New BufferManager(Me, BackColor)
+
 
     Private Controllers As XboxControllers
 
@@ -1888,22 +1987,41 @@ Public Class Form1
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
 
-        e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
 
-        e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
+        OffScreen.AllocateBuffer(Me)
 
-        e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
-        e.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
+        'e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
+
+        'e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
+
+        'e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+
+
+        ' Hints Display
+
+
+
+
+
+
+        OffScreen.Buffered.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
 
         If Body.ShowKeyboardHints Then
-            e.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+            OffScreen.Buffered.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
 
         End If
 
-        Body.Draw(e.Graphics)
+        Body.Draw(OffScreen.Buffered.Graphics)
 
-        Arrow.Draw(e.Graphics)
+        Arrow.Draw(OffScreen.Buffered.Graphics)
+
+
+        ' Show buffer on form.
+        OffScreen.Buffered?.Render(e.Graphics)
+
+        OffScreen.EraseFrame()
+
 
     End Sub
 
@@ -1950,9 +2068,21 @@ Public Class Form1
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
 
-        ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+        If Not WindowState = FormWindowState.Minimized Then
 
-        Body.Center = ClientCenter
+            ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+
+            Body.Center = ClientCenter
+
+            OffScreen.DisposeBuffer()
+
+            Timer1.Enabled = True
+
+        Else
+
+            Timer1.Enabled = False
+
+        End If
 
     End Sub
 
@@ -2149,7 +2279,6 @@ Public Class Form1
 
     End Sub
 
-
     Private Sub HandleAudioPlayback()
 
         If Body.Velocity <> 0 Then
@@ -2183,8 +2312,6 @@ Public Class Form1
         End If
 
     End Sub
-
-
 
     Private Sub InitializeForm()
 
