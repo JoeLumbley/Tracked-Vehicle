@@ -355,6 +355,8 @@ Public Structure Body
 
     Public ShowKeyboardHints As Boolean
 
+    Public ShowControllerHints As Boolean
+
     Public TimeToNextRotation As TimeSpan
 
     Private LastRotationTime As DateTime
@@ -546,7 +548,6 @@ Public Structure Body
 
     End Sub
 
-
     Public Sub Update(ByVal deltaTime As TimeSpan)
 
         AngleInRadians = DegreesToRadians(AngleInDegrees)
@@ -586,6 +587,23 @@ Public Structure Body
             g?.DrawString("S", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
 
         End If
+
+        If ShowControllerHints Then
+
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(0).X - 17, RotatedKeyboardHints(0).Y - 17, 34, 34)
+            g?.DrawString("L", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(0), AlineCenterMiddle)
+
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(1).X - 17, RotatedKeyboardHints(1).Y - 17, 34, 34)
+            g?.DrawString("R", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(1), AlineCenterMiddle)
+
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(2).X - 17, RotatedKeyboardHints(2).Y - 17, 34, 34)
+            g?.DrawString("A", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(2), AlineCenterMiddle)
+
+            g?.FillEllipse(Brushes.Black, RotatedKeyboardHints(3).X - 17, RotatedKeyboardHints(3).Y - 17, 34, 34)
+            g?.DrawString("Y", KeyboardHintsFont, Brushes.White, RotatedKeyboardHints(3), AlineCenterMiddle)
+
+        End If
+
 
     End Sub
 
@@ -1921,23 +1939,52 @@ Public Class Form1
 
     Private F1DownHandled As Boolean
 
+    Private F2Down As Boolean
+
+    Private F2DownHandled As Boolean
+
+
     Private InstructionsFont As New Font("Segoe UI", 14)
 
-    Private InstructionsLocation As New PointF(0, 35)
+    Private InstructionsLocation As New Rectangle(0, 0, 500, 500)
 
     Private F1NoticeLocation As New PointF(0, 0)
 
-    Private F1Notice As New String("Show / Hide Keyboard Hints > F1")
+    Private HiddenHints As New String("Show / Hide Keyboard Hints > F1" _
+                                  & Environment.NewLine)
 
-    Private InstructionsText As New String("Rotate Counterclockwise > A" _
-                                         & Environment.NewLine _
-                                         & "Rotate Clockwise > D" _
-                                         & Environment.NewLine _
-                                         & "Forward > W" _
-                                         & Environment.NewLine _
-                                         & "Reverse > S" _
-                                         & Environment.NewLine _
-                                         & "Stop > E")
+    Private KeyboardHintsText As New String("Show / Hide Keyboard Hints > F1" _
+                                  & Environment.NewLine _
+                                  & "Show / Hide Controller Hints > F2" _
+                                  & Environment.NewLine _
+                                  & "Rotate Counterclockwise > A" _
+                                  & Environment.NewLine _
+                                  & "Rotate Clockwise > D" _
+                                  & Environment.NewLine _
+                                  & "Forward > W" _
+                                  & Environment.NewLine _
+                                  & "Reverse > S" _
+                                  & Environment.NewLine _
+                                  & "Stop > E")
+
+
+    Private ControllerHintsText As New String("Show / Hide Keyboard Hints > F1" _
+                                  & Environment.NewLine _
+                                  & "Show / Hide Controller Hints > F2" _
+                                  & Environment.NewLine _
+                                  & "Rotate Counterclockwise > Left" _
+                                  & Environment.NewLine _
+                                  & "Rotate Clockwise > Right" _
+                                  & Environment.NewLine _
+                                  & "Forward > A" _
+                                  & Environment.NewLine _
+                                  & "Reverse > Y" _
+                                  & Environment.NewLine _
+                                  & "Stop > B")
+
+    Private HintsText As String = KeyboardHintsText
+
+
 
     Private Player As AudioPlayer
 
@@ -1965,6 +2012,19 @@ Public Class Form1
         Body.CheckWallBounce(Body.Body, ClientSize.Width, ClientSize.Height)
 
         Body.Update(DeltaTime.ElapsedTime)
+
+
+        'If Body.ShowKeyboardHints = True Then
+
+        '    HintsText = KeyboardHintsText
+
+        'Else
+
+        '    HintsText = ControllerHintsText
+
+        'End If
+
+
 
         Arrow.Center = Body.Center
 
@@ -2009,6 +2069,8 @@ Public Class Form1
                 EDown = True
             Case Keys.F1
                 F1Down = True
+            Case Keys.F2
+                F2Down = True
         End Select
 
     End Sub
@@ -2030,6 +2092,10 @@ Public Class Form1
             Case Keys.F1
                 F1Down = False
                 F1DownHandled = False
+            Case Keys.F2
+                F2Down = False
+                F2DownHandled = False
+
         End Select
 
     End Sub
@@ -2067,12 +2133,13 @@ Public Class Form1
 
         ' Hints Display
 
-        OffScreen.Buffered.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
+        'OffScreen.Buffered.Graphics.DrawString(HiddenHints, InstructionsFont, Brushes.Black, F1NoticeLocation)
 
-        If Body.ShowKeyboardHints Then
-            OffScreen.Buffered.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+        'If Body.ShowKeyboardHints Then
 
-        End If
+        OffScreen.Buffered.Graphics.DrawString(HintsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+
+        'End If
 
         Body.Draw(OffScreen.Buffered.Graphics)
 
@@ -2169,11 +2236,15 @@ Public Class Form1
 
         If F1Down Then
 
+            If Body.ShowControllerHints Then Body.ShowControllerHints = False
+
             If Body.ShowKeyboardHints Then
 
                 If Not F1DownHandled Then
 
                     Body.ShowKeyboardHints = False
+
+                    HintsText = HiddenHints
 
                     F1DownHandled = True
 
@@ -2185,7 +2256,41 @@ Public Class Form1
 
                     Body.ShowKeyboardHints = True
 
+                    HintsText = KeyboardHintsText
+
                     F1DownHandled = True
+
+                End If
+
+            End If
+
+        End If
+
+        If F2Down Then
+
+            If Body.ShowKeyboardHints Then Body.ShowKeyboardHints = False
+
+            If Body.ShowControllerHints Then
+
+                If Not F2DownHandled Then
+
+                    Body.ShowControllerHints = False
+
+                    HintsText = HiddenHints
+
+                    F2DownHandled = True
+
+                End If
+
+            Else
+
+                If Not F2DownHandled Then
+
+                    Body.ShowControllerHints = True
+
+                    HintsText = ControllerHintsText
+
+                    F2DownHandled = True
 
                 End If
 
