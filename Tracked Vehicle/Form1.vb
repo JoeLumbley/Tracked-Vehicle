@@ -1958,13 +1958,9 @@ Public Class Form1
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
 
-        Controllers.Update()
-
         DeltaTime.Update()
 
-        HandleKeyPresses()
-
-        HandleControllerInput()
+        HandleUserInput()
 
         Body.CheckWallBounce(Body.Body, ClientSize.Width, ClientSize.Height)
 
@@ -1984,44 +1980,16 @@ Public Class Form1
 
     End Sub
 
+
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
 
-
-        OffScreen.AllocateBuffer(Me)
-
-
-        'e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
-
-        'e.Graphics.CompositingMode = Drawing2D.CompositingMode.SourceOver
-
-        'e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-
-
-        ' Hints Display
-
-
-
-
-
-
-        OffScreen.Buffered.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
-
-        If Body.ShowKeyboardHints Then
-            OffScreen.Buffered.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
-
-        End If
-
-        Body.Draw(OffScreen.Buffered.Graphics)
-
-        Arrow.Draw(OffScreen.Buffered.Graphics)
-
+        DrawFrame()
 
         ' Show buffer on form.
         OffScreen.Buffered?.Render(e.Graphics)
 
         OffScreen.EraseFrame()
-
 
     End Sub
 
@@ -2089,6 +2057,36 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         ClientCenter = New Point(ClientSize.Width / 2, ClientSize.Height / 2)
+
+    End Sub
+
+    Private Sub DrawFrame()
+
+        OffScreen.AllocateBuffer(Me)
+
+
+        ' Hints Display
+
+        OffScreen.Buffered.Graphics.DrawString(F1Notice, InstructionsFont, Brushes.Black, F1NoticeLocation)
+
+        If Body.ShowKeyboardHints Then
+            OffScreen.Buffered.Graphics.DrawString(InstructionsText, InstructionsFont, Brushes.Black, InstructionsLocation)
+
+        End If
+
+        Body.Draw(OffScreen.Buffered.Graphics)
+
+        Arrow.Draw(OffScreen.Buffered.Graphics)
+
+    End Sub
+
+    Private Sub HandleUserInput()
+
+        Controllers.Update()
+
+        HandleKeyPresses()
+
+        HandleControllerInput()
 
     End Sub
 
