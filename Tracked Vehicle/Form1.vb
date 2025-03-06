@@ -3,7 +3,6 @@ Imports System.IO
 Imports System.Math
 Imports System.Runtime.InteropServices
 Imports System.Text
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Tab
 
 Public Structure DeltaTimeStructure
 
